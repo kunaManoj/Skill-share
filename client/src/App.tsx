@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
@@ -47,18 +47,18 @@ function App() {
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
-                      <a
-                        href="/marketplace"
+                      <Link
+                        to="/marketplace"
                         className="inline-flex justify-center items-center py-4 px-10 text-sm font-black text-white rounded-xl bg-primary-600 hover:bg-primary-700 transition-all shadow-xl shadow-primary-500/25 active:scale-95"
                       >
                         Browse Skills
-                      </a>
-                      <a
-                        href="/skills/new"
+                      </Link>
+                      <Link
+                        to="/skills/new"
                         className="inline-flex justify-center items-center py-4 px-10 text-sm font-black text-gray-900 rounded-xl bg-white/60 border border-gray-200 hover:bg-white/90 transition-all shadow-sm active:scale-95 backdrop-blur-sm"
                       >
                         Become a Mentor
-                      </a>
+                      </Link>
                     </div>
 
 

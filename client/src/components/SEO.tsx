@@ -7,8 +7,9 @@ interface SEOProps {
 }
 
 export default function SEO({ title, description, type = 'website' }: SEOProps) {
-    const siteTitle = 'UniRent';
-    const metaDescription = description || 'UniRent - Campus Skill Marketplace for lending and borrowing skills.';
+    const siteTitle = 'SkillShare';
+    const metaDescription = description || 'SkillShare - Campus Skill Marketplace for lending and borrowing skills.';
+
 
     return (
         <Helmet>
