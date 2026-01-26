@@ -1,9 +1,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useUser } from '@clerk/clerk-react';
+
 import { io, Socket } from 'socket.io-client';
-import { Mic, MicOff, Video, VideoOff, PhoneOff, Loader2, Users, MoreVertical, Settings, Shield } from 'lucide-react';
+import { Mic, MicOff, Video, VideoOff, PhoneOff, Users, MoreVertical, Settings, Shield } from 'lucide-react';
+
 import SEO from '../components/SEO';
 import clsx from 'clsx';
 
@@ -11,7 +12,8 @@ const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function MeetingPage() {
     const { bookingId } = useParams();
-    const { user } = useUser();
+    // const { user } = useUser();
+
     const navigate = useNavigate();
 
     const [stream, setStream] = useState<MediaStream | null>(null);

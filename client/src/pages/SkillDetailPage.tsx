@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react';
-import api, { getReviewsForSkill } from '../lib/api';
+import api, { getReviewsForSkill, deleteSkill } from '../lib/api';
+
 import BookingModal from '../components/BookingModal';
-import { Clock, Award, MessageSquare, ChevronLeft, Star, Globe, Zap } from 'lucide-react';
+import { Clock, Award, MessageSquare, ChevronLeft, Star, Globe, Zap, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
+
 import { format } from 'date-fns';
 import SEO from '../components/SEO';
 
@@ -147,7 +150,7 @@ export default function SkillDetailPage() {
                             </div>
 
                             <div className="space-y-3">
-                                {user?.id === skill.providerId ? (
+                                {user && user.id === skill.providerId ? (
                                     <button
                                         onClick={async () => {
                                             if (window.confirm('Are you sure you want to delete this skill? This action cannot be undone.')) {
@@ -156,6 +159,7 @@ export default function SkillDetailPage() {
                                                     toast.success('Skill deleted successfully');
                                                     navigate('/marketplace');
                                                 } catch (err) {
+                                                    // console.error(err);
                                                     toast.error('Failed to delete skill');
                                                 }
                                             }
@@ -166,6 +170,7 @@ export default function SkillDetailPage() {
                                         Delete Skill
                                     </button>
                                 ) : (
+
                                     <>
                                         <button
                                             onClick={() => {
