@@ -21,7 +21,6 @@ export default function MeetingPage() {
     // Call Status
     const [callEnded, setCallEnded] = useState(false);
     const [status, setStatus] = useState('Checking camera...');
-    const [remotePeerId, setRemotePeerId] = useState<string | null>(null);
 
     // Controls Status - Default OFF
     const [isMuted, setIsMuted] = useState(true);
@@ -67,7 +66,6 @@ export default function MeetingPage() {
 
         socketRef.current.on('user_joined_video', (id: string) => {
             console.log('Peer joined:', id);
-            setRemotePeerId(id);
             remotePeerIdRef.current = id;
             setStatus('Connecting...');
             initiateCall(id);
@@ -75,7 +73,6 @@ export default function MeetingPage() {
 
         socketRef.current.on('user_left_video', (id: string) => {
             console.log('Peer left:', id);
-            setRemotePeerId(null);
             remotePeerIdRef.current = null;
             setRemoteStream(null);
             setCallEnded(false); // Reset callEnded to allow reconnection if same user joins
@@ -87,7 +84,6 @@ export default function MeetingPage() {
 
         socketRef.current.on('call_user', ({ from, signal }) => {
             console.log('Incoming call from:', from);
-            setRemotePeerId(from);
             remotePeerIdRef.current = from;
             setStatus('Incoming connection...');
             answerCall(from, signal);
@@ -164,7 +160,6 @@ export default function MeetingPage() {
         await peer.setRemoteDescription(new RTCSessionDescription(offer));
         const answer = await peer.createAnswer();
         await peer.setLocalDescription(answer);
-        setRemotePeerId(callerId);
         remotePeerIdRef.current = callerId;
 
         socketRef.current?.emit('answer_call', {
