@@ -94,6 +94,15 @@ io.on('connection', (socket) => {
         io.to(to).emit('ice_candidate', { candidate, from: socket.id });
     });
 
+    socket.on('disconnecting', () => {
+        const rooms = [...socket.rooms];
+        rooms.forEach((room) => {
+            if (room !== socket.id) {
+                socket.to(room).emit('user_left_video', socket.id);
+            }
+        });
+    });
+
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);
     });

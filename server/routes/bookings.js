@@ -89,9 +89,8 @@ router.patch('/:id/status', async (req, res) => {
 
         // Generate meeting link if approved
         if (status === 'approved') {
-            // Using Jitsi Meet for instant, no-login video calls
-            // Format: https://meet.jit.si/SkillShare-Session-<BookingID>
-            updateData.meetingLink = `https://meet.jit.si/SkillShare-Session-${req.params.id}`;
+            // Using internal meeting room
+            updateData.meetingLink = `/meeting/${req.params.id}`;
         }
 
         const booking = await Booking.findByIdAndUpdate(

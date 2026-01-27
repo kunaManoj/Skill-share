@@ -132,12 +132,20 @@ export default function BookingsPage() {
                                     <div className="flex items-center gap-2">
                                         {/* Provider Actions */}
                                         {booking.status === 'requested' && role === 'provider' && (
-                                            <button
-                                                onClick={() => handleStatusUpdate(booking._id, 'approved')}
-                                                className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-[10px] font-black shadow-lg shadow-emerald-600/10 hover:bg-emerald-700 transition-colors"
-                                            >
-                                                Approve
-                                            </button>
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => handleStatusUpdate(booking._id, 'approved')}
+                                                    className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-[10px] font-black shadow-lg shadow-emerald-600/10 hover:bg-emerald-700 transition-colors"
+                                                >
+                                                    Approve
+                                                </button>
+                                                <button
+                                                    onClick={() => handleStatusUpdate(booking._id, 'rejected')}
+                                                    className="px-4 py-2 bg-white border border-rose-200 text-rose-600 rounded-lg text-[10px] font-black hover:bg-rose-50 transition-colors"
+                                                >
+                                                    Reject
+                                                </button>
+                                            </div>
                                         )}
 
                                         {/* Student Actions: Cancel if requested */}
