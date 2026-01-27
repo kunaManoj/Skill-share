@@ -19,7 +19,6 @@ export default function MeetingPage() {
     const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
 
     // Call Status
-    const [callAccepted, setCallAccepted] = useState(false);
     const [callEnded, setCallEnded] = useState(false);
     const [status, setStatus] = useState('Checking camera...');
     const [remotePeerId, setRemotePeerId] = useState<string | null>(null);
@@ -38,7 +37,7 @@ export default function MeetingPage() {
 
     // Keep track of the original camera stream to revert after screen share
     const cameraStreamRef = useRef<MediaStream | null>(null);
-    const streamRef = useRef<MediaStream | null>(null); // Current active stream
+    const streamRef = useRef<MediaStream | null>(null); // Current active active stream
 
     useEffect(() => {
         socketRef.current = io(SOCKET_URL);
@@ -79,7 +78,7 @@ export default function MeetingPage() {
             setRemotePeerId(null);
             remotePeerIdRef.current = null;
             setRemoteStream(null);
-            setCallAccepted(false);
+            setCallEnded(false); // Reset callEnded to allow reconnection if same user joins
             setStatus('Remote user left. Waiting...');
             if (userVideo.current) {
                 userVideo.current.srcObject = null;
@@ -96,7 +95,6 @@ export default function MeetingPage() {
 
         socketRef.current.on('call_accepted', (signal) => {
             console.log('Call accepted');
-            setCallAccepted(true);
             setStatus('Connected');
             connectionRef.current?.setRemoteDescription(new RTCSessionDescription(signal));
         });
@@ -166,7 +164,6 @@ export default function MeetingPage() {
         await peer.setRemoteDescription(new RTCSessionDescription(offer));
         const answer = await peer.createAnswer();
         await peer.setLocalDescription(answer);
-        setCallAccepted(true);
         setRemotePeerId(callerId);
         remotePeerIdRef.current = callerId;
 
