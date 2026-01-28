@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { SignedIn, SignedOut, UserButton, useUser } from '@clerk/clerk-react';
-import { Menu, X, BookOpen, MessageSquare, Wallet, GraduationCap, Shield, Bell } from 'lucide-react';
+import { Menu, X, BookOpen, Wallet, GraduationCap, Shield, Bell } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { devSyncUser } from '../lib/api';
 

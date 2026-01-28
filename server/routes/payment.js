@@ -8,14 +8,19 @@ const Wallet = require('../models/Wallet');
 const User = require('../models/User');
 
 // Initialize Razorpay
-// TODO: User needs to fill these in .env
-const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET
-});
+let razorpay = null;
+if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+    razorpay = new Razorpay({
+        key_id: process.env.RAZORPAY_KEY_ID,
+        key_secret: process.env.RAZORPAY_KEY_SECRET
+    });
+} else {
+    console.warn("⚠️ Razorpay keys missing. Payment routes will fail.");
+}
 
 // Create Order
 router.post('/create-order', async (req, res) => {
+    if (!razorpay) return res.status(500).json({ error: 'Payment gateway not configured' });
     try {
         const { amount, currency = 'INR' } = req.body;
 
