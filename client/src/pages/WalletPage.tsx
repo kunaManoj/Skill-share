@@ -55,8 +55,8 @@ export default function WalletPage() {
             <SEO title="My Wallet" description="Manage your UniRent balance and transactions." />
 
             {/* Header section */}
-            <div className="bg-white border-b border-gray-100 mb-6 transition-colors duration-300">
-                <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+            <div className="bg-white border-b border-gray-100 mb-6">
+                <div className="w-full px-4 sm:px-6 lg:px-8 py-6 md:py-8">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div className="space-y-1">
                             <h1 className="text-2xl font-black text-black tracking-tight flex items-center gap-2">
@@ -69,12 +69,12 @@ export default function WalletPage() {
                 </div>
             </div>
 
-            <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pb-10">
+            <div className="w-full px-4 sm:px-6 lg:px-8 pb-10">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                     {/* Left Column: Balance & Controls */}
                     <div className="lg:col-span-1 space-y-4">
-                        <div className="bg-gradient-to-br from-primary-600 to-primary-800 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden group">
+                        <div className="bg-gradient-to-br from-primary-600 to-primary-800 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden group border border-primary-500/20">
                             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
                                 <WalletIcon size={120} />
                             </div>
@@ -111,7 +111,7 @@ export default function WalletPage() {
                             </div>
                         </div>
 
-                        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm transition-colors">
+                        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                             <h3 className="font-black text-black mb-4 uppercase tracking-widest text-[10px]">Security</h3>
                             <ul className="space-y-3">
                                 <BenefitItem text="Encrypted Ledger" />
@@ -122,7 +122,7 @@ export default function WalletPage() {
 
                     {/* Right Column: Transactions */}
                     <div className="lg:col-span-2">
-                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-colors">
+                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                             <div className="p-6 border-b border-gray-50 flex items-center justify-between">
                                 <h3 className="font-black text-black text-sm flex items-center gap-2">
                                     <History size={18} className="text-primary-600" />
@@ -137,7 +137,7 @@ export default function WalletPage() {
                                     </div>
                                 ) : (
                                     transactions.map((tx) => (
-                                        <div key={tx._id} className="p-5 hover:bg-gray-50/50:bg-gray-800/30 transition-colors flex items-center justify-between group">
+                                        <div key={tx._id} className="p-5 hover:bg-gray-50 transition-colors flex items-center justify-between group">
                                             <div className="flex items-center gap-4">
                                                 <div className={clsx("w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105",
                                                     tx.type === 'CREDIT' ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-50 text-gray-500'
@@ -179,4 +179,3 @@ function BenefitItem({ text }: { text: string }) {
         </li>
     );
 }
-

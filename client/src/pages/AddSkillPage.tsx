@@ -42,7 +42,7 @@ export default function AddSkillPage() {
     };
 
     return (
-        <div className="max-w-3xl mx-auto px-4 py-12">
+        <div className="max-w-3xl mx-auto px-4 py-12 min-h-[calc(100vh-64px)]">
             <SEO title="Add New Skill" />
             <div className="text-center mb-10">
                 <h1 className="text-3xl font-bold text-gray-900">Share Your Skill</h1>
@@ -62,7 +62,7 @@ export default function AddSkillPage() {
                             <input
                                 type="text"
                                 required
-                                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white text-gray-900 placeholder:text-gray-400 outline-none"
                                 placeholder="e.g. Advanced Calculus Tutoring"
                                 value={formData.title}
                                 onChange={e => setFormData({ ...formData, title: e.target.value })}
@@ -80,7 +80,7 @@ export default function AddSkillPage() {
                                 </div>
                                 <select
                                     required
-                                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white"
+                                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white text-gray-900 outline-none cursor-pointer"
                                     value={formData.category}
                                     onChange={e => setFormData({ ...formData, category: e.target.value })}
                                 >
@@ -102,7 +102,7 @@ export default function AddSkillPage() {
                                     type="number"
                                     required
                                     min="0"
-                                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white text-gray-900 placeholder:text-gray-400 outline-none"
                                     placeholder="500"
                                     value={formData.price}
                                     onChange={e => setFormData({ ...formData, price: e.target.value })}
@@ -119,7 +119,7 @@ export default function AddSkillPage() {
                                 <Award size={18} />
                             </div>
                             <select
-                                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white"
+                                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white text-gray-900 outline-none cursor-pointer"
                                 value={formData.experience}
                                 onChange={e => setFormData({ ...formData, experience: e.target.value })}
                             >
@@ -136,7 +136,7 @@ export default function AddSkillPage() {
                         <textarea
                             required
                             rows={4}
-                            className="block w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                            className="block w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white text-gray-900 placeholder:text-gray-400 outline-none resize-none"
                             placeholder="Describe what you will teach and your teaching style..."
                             value={formData.description}
                             onChange={e => setFormData({ ...formData, description: e.target.value })}
@@ -145,11 +145,11 @@ export default function AddSkillPage() {
 
                 </div>
 
-                <div className="bg-gray-50 px-8 py-4 flex justify-end items-center gap-4">
+                <div className="bg-gray-50 px-8 py-4 flex justify-end items-center gap-4 border-t border-gray-100">
                     <button
                         type="button"
                         onClick={() => navigate(-1)}
-                        className="text-gray-600 hover:text-gray-800 font-medium"
+                        className="text-gray-600 hover:text-gray-800 font-medium transition-colors"
                     >
                         Cancel
                     </button>

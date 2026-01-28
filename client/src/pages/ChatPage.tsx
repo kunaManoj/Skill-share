@@ -62,7 +62,7 @@ export default function ChatPage() {
             <Zap size={48} className="text-gray-200" />
             <h2 className="text-xl font-bold text-gray-900">Start a Conversation</h2>
             <p className="text-gray-500 max-w-xs">Select a booking from your dashboard to begin chatting with your peer.</p>
-            <Link to="/bookings" className="px-6 py-2 bg-primary-600 text-white rounded-xl font-bold">My Bookings</Link>
+            <Link to="/bookings" className="px-6 py-2 bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700 transition-colors">My Bookings</Link>
         </div>
     );
 
@@ -71,14 +71,14 @@ export default function ChatPage() {
     return (
         <div className="max-w-5xl mx-auto px-4 py-6 h-[calc(100vh-64px)] flex flex-col">
             {/* Header controls */}
-            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-4 mb-4 transition-colors">
+            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-4 mb-4">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
                     <div className="flex items-center gap-4">
-                        <Link to="/bookings" className="p-2 hover:bg-gray-50:bg-gray-800 rounded-full transition-colors text-gray-400">
+                        <Link to="/bookings" className="p-2 hover:bg-gray-50 rounded-full transition-colors text-gray-400">
                             <ChevronLeft size={24} />
                         </Link>
                         <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-2xl bg-primary-100 flex items-center justify-center text-primary-600 font-black text-xl">
+                            <div className="w-12 h-12 rounded-2xl bg-primary-100 flex items-center justify-center text-primary-600 font-black text-xl border border-primary-50">
                                 {otherUser?.firstName?.[0] || <User size={24} />}
                             </div>
                             <div>
@@ -109,7 +109,7 @@ export default function ChatPage() {
             </div>
 
             {/* Chat contentArea */}
-            <div className="flex-1 bg-white/50 backdrop-blur-sm rounded-[2.5rem] border border-gray-100 overflow-hidden flex flex-col shadow-inner">
+            <div className="flex-1 bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden flex flex-col shadow-inner">
                 <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-hide">
                     <AnimatePresence initial={false}>
                         {messages.map((msg, idx) => {
@@ -126,10 +126,10 @@ export default function ChatPage() {
                                         isMe ? "items-end" : "items-start"
                                     )}>
                                         <div className={clsx(
-                                            "rounded-[1.5rem] px-5 py-3 shadow-sm text-sm font-medium leading-relaxed transition-colors",
+                                            "rounded-[1.5rem] px-5 py-3 shadow-sm text-sm font-medium leading-relaxed",
                                             isMe
                                                 ? "bg-primary-600 text-white rounded-br-none"
-                                                : "bg-white text-gray-900 border border-gray-50 rounded-bl-none"
+                                                : "bg-gray-50 text-gray-900 border border-gray-100 rounded-bl-none"
                                         )}>
                                             <p>{msg.text}</p>
                                         </div>
@@ -145,11 +145,11 @@ export default function ChatPage() {
                 </div>
 
                 {/* Input Area box */}
-                <div className="p-6 bg-white border-t border-gray-50 transition-colors">
+                <div className="p-6 bg-white border-t border-gray-100">
                     <form onSubmit={handleSendMessage} className="flex gap-3">
                         <input
                             type="text"
-                            className="flex-1 bg-white border border-gray-200 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-4 focus:ring-primary-100 focus:border-primary-500 transition-all text-gray-900 placeholder:text-gray-400 outline-none shadow-sm"
+                            className="flex-1 bg-gray-50 border border-gray-200 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-4 focus:ring-primary-100 focus:border-primary-500 transition-all text-gray-900 placeholder:text-gray-400 outline-none shadow-sm"
                             placeholder={booking?.status === 'completed' ? "Chat is closed" : "Message your peer..."}
                             value={newMessage}
                             onChange={(e) => setNewMessage(e.target.value)}
@@ -174,4 +174,3 @@ export default function ChatPage() {
         </div>
     );
 }
-

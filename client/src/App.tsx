@@ -18,7 +18,7 @@ import SEO from './components/SEO';
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen text-gray-900 font-sans transition-colors duration-300">
+      <div className="min-h-screen text-gray-900 font-sans">
         <SEO title="Home" />
         <Toaster position="top-center" richColors />
         <Navbar />
@@ -31,18 +31,18 @@ function App() {
                 <div className="absolute top-0 right-1/4 w-96 h-96 bg-secondary-200/40 rounded-full blur-3xl opacity-50 animate-blob animation-delay-2000 mix-blend-multiply filter"></div>
                 <div className="absolute -bottom-32 left-1/3 w-96 h-96 bg-purple-200/40 rounded-full blur-3xl opacity-50 animate-blob animation-delay-4000 mix-blend-multiply filter"></div>
 
-                <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] px-4 text-center relative z-10">
-                  <div className="max-w-3xl space-y-6 py-12">
+                <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] w-full px-6 md:px-12 text-center relative z-10">
+                  <div className="w-full max-w-4xl space-y-8 py-16">
                     <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/50 border border-primary-100 text-primary-600 text-[10px] font-bold tracking-widest uppercase mb-4 backdrop-blur-sm">
                       <span>Revolutionizing Campus Learning</span>
                     </div>
 
                     <h1 className="flex flex-col items-center font-black tracking-tight text-black leading-[1.1]">
-                      <span className="text-4xl md:text-6xl">Master New Skills with</span>
-                      <span className="text-4xl md:text-6xl text-primary-600">Campus Peers</span>
+                      <span className="text-5xl md:text-7xl">Master New Skills with</span>
+                      <span className="text-5xl md:text-7xl text-primary-600">Campus Peers</span>
                     </h1>
 
-                    <p className="text-base md:text-xl text-gray-600 max-w-xl mx-auto leading-relaxed font-medium">
+                    <p className="text-lg md:text-2xl text-gray-600 max-w-2xl mx-auto leading-relaxed font-medium">
                       The simplest way to learn and teach within your campus.
                       Peer-to-peer learning, made premium.
                     </p>

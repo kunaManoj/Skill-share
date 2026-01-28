@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { api } from '../lib/api';
-import { Loader2, Bell, CheckCircle, Clock, CreditCard, Calendar } from 'lucide-react';
+import { Loader2, Bell, CheckCircle, Clock, CreditCard, Calendar, BellOff } from 'lucide-react';
 import { format } from 'date-fns';
 import clsx from 'clsx';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +11,7 @@ export default function NotificationsPage() {
     const navigate = useNavigate();
     const [notifications, setNotifications] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const unreadCount = notifications.filter(n => !n.isRead).length;
 
     useEffect(() => {
         if (user) fetchNotifications();
@@ -52,66 +53,77 @@ export default function NotificationsPage() {
     };
 
     return (
-        <div className="max-w-3xl mx-auto px-6 py-10 min-h-[calc(100vh-64px)]">
-            <div className="flex items-center justify-between mb-8">
-                <div>
-                    <h1 className="text-2xl font-black text-gray-900">Notifications</h1>
-                    <p className="text-sm text-gray-500 font-medium">Updates and reminders</p>
+        <div className="min-h-[calc(100vh-64px)] pb-20">
+            {/* Header */}
+            <div className="bg-white border-b border-gray-100 mb-6">
+                <div className="w-full px-6 xl:px-12 py-8">
+                    <h1 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
+                        Notifications
+                        {unreadCount > 0 && (
+                            <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">
+                                {unreadCount} New
+                            </span>
+                        )}
+                    </h1>
+                    <p className="text-[10px] text-gray-500 font-bold tracking-widest uppercase mt-1">Updates & Alerts</p>
                 </div>
             </div>
 
-            {loading ? (
-                <div className="flex justify-center py-20">
-                    <Loader2 className="animate-spin text-primary-600" size={32} />
-                </div>
-            ) : notifications.length === 0 ? (
-                <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
-                    <Bell className="mx-auto text-gray-300 mb-4" size={48} />
-                    <h3 className="text-lg font-bold text-gray-900">No notifications yet</h3>
-                    <p className="text-gray-500 text-sm">We'll let you know when something important happens.</p>
-                </div>
-            ) : (
-                <div className="space-y-4">
-                    {notifications.map((notif) => (
-                        <div
-                            key={notif._id}
-                            onClick={() => handleNotificationClick(notif)}
-                            className={clsx(
-                                "group bg-white p-5 rounded-2xl border transition-all duration-200 flex gap-4 cursor-pointer hover:shadow-md",
-                                notif.isRead ? "border-gray-100" : "border-primary-100 bg-primary-50/10"
-                            )}
-                        >
-                            <div className={clsx(
-                                "w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors",
-                                notif.isRead ? "bg-gray-50" : "bg-white shadow-sm border border-gray-100"
-                            )}>
-                                {getIcon(notif.type)}
-                            </div>
+            <div className="w-full px-6 xl:px-12 max-w-4xl mx-auto">
+                {loading ? (
+                    <div className="flex justify-center py-20">
+                        <Loader2 className="animate-spin text-primary-600" size={32} />
+                    </div>
+                ) : notifications.length === 0 ? (
+                    <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-200 flex flex-col items-center">
+                        <BellOff size={48} className="text-gray-200 mb-4" />
+                        <h3 className="text-lg font-bold text-black mb-2">No notifications yet</h3>
+                        <p className="text-gray-500 text-sm">We'll let you know when something important happens.</p>
+                    </div>
+                ) : (
+                    <div className="space-y-4">
+                        {notifications.map((notif) => (
+                            <div
+                                key={notif._id}
+                                onClick={() => handleNotificationClick(notif)}
+                                className={clsx(
+                                    "relative bg-white rounded-2xl border p-5 flex gap-4 transition-all duration-200 cursor-pointer group",
+                                    notif.isRead
+                                        ? "border-gray-100 opacity-70 hover:opacity-100 hover:border-gray-200"
+                                        : "border-primary-100 shadow-sm shadow-primary-500/5 hover:shadow-md hover:border-primary-200"
+                                )}
+                            >
+                                {!notif.isRead && (
+                                    <div className="absolute top-5 right-5 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                                )}
 
-                            <div className="flex-1">
-                                <div className="flex items-start justify-between gap-4">
-                                    <h3 className={clsx("font-bold text-gray-900", !notif.isRead && "text-primary-900")}>
-                                        {notif.title}
-                                    </h3>
-                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide whitespace-nowrap mt-1">
-                                        {format(new Date(notif.createdAt), 'MMM d, p')}
-                                    </span>
+                                <div className={clsx(
+                                    "w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-colors border",
+                                    notif.isRead
+                                        ? "bg-gray-50 border-gray-100 text-gray-400"
+                                        : "bg-primary-50 border-primary-100 text-primary-600"
+                                )}>
+                                    {getIcon(notif.type)}
                                 </div>
-                                <p className="text-sm text-gray-600 mt-1 leading-relaxed">
-                                    {notif.message}
-                                </p>
 
-                                {/* Link removed as per request, whole card is now clickable if needed, or just informative */}
-
+                                <div className="flex-1 pr-4">
+                                    <h4 className={clsx("text-sm font-bold mb-1 group-hover:text-primary-600 transition-colors",
+                                        notif.isRead ? "text-gray-900" : "text-black"
+                                    )}>
+                                        {notif.title}
+                                    </h4>
+                                    <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
+                                        {notif.message}
+                                    </p>
+                                    <p className="text-[10px] font-bold text-gray-300 uppercase tracking-wider mt-3">
+                                        {format(new Date(notif.createdAt), 'MMM d, p')}
+                                    </p>
+                                </div>
                             </div>
-
-                            {!notif.isRead && (
-                                <div className="w-2 h-2 rounded-full bg-primary-500 mt-2 flex-shrink-0" />
-                            )}
-                        </div>
-                    ))}
-                </div>
-            )}
+                        ))}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
