@@ -53,7 +53,7 @@ export default function MarketplacePage() {
             />
 
             {/* Hero Header */}
-            <div className="bg-white border-b border-gray-100">
+            <div className="bg-white/60 backdrop-blur-xl border-b border-white/30">
                 <div className="w-full px-4 sm:px-6 lg:px-8 py-10 md:py-12">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                         <div className="space-y-2 max-w-2xl">
@@ -71,7 +71,7 @@ export default function MarketplacePage() {
                             </div>
                             <input
                                 type="text"
-                                className="block w-full pl-10 pr-4 py-3.5 rounded-xl border border-gray-200 bg-white text-gray-950 placeholder:text-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all text-sm font-medium outline-none"
+                                className="block w-full pl-10 pr-4 py-3.5 rounded-xl border border-white/40 bg-white/60 backdrop-blur-md text-gray-950 placeholder:text-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all text-sm font-medium outline-none shadow-lg shadow-gray-200/30"
                                 placeholder="Search skills..."
                                 value={searchQuery}
                                 onChange={(e) => {
@@ -93,9 +93,9 @@ export default function MarketplacePage() {
                             <button
                                 key={cat}
                                 onClick={() => handleCategoryChange(cat)}
-                                className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 ${selectedCategory === cat
-                                    ? 'bg-primary-600 text-white shadow-lg shadow-primary-500/20'
-                                    : 'bg-white border border-gray-200 text-gray-700 hover:border-primary-500 hover:text-primary-600'
+                                className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 backdrop-blur-md ${selectedCategory === cat
+                                    ? 'bg-primary-600/90 text-white shadow-lg shadow-primary-500/20 border border-primary-500/50'
+                                    : 'bg-white/60 border border-white/40 text-gray-700 hover:border-primary-400/50 hover:text-primary-600 shadow-sm'
                                     }`}
                             >
                                 {cat}
@@ -116,7 +116,7 @@ export default function MarketplacePage() {
                         ))}
                     </div>
                 ) : (
-                    <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-200 flex flex-col items-center">
+                    <div className="text-center py-20 bg-white/50 backdrop-blur-lg rounded-2xl border border-white/40 border-dashed flex flex-col items-center shadow-lg">
                         <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-gray-100">
                             <Filter size={32} className="text-gray-400" />
                         </div>

@@ -21,7 +21,7 @@ interface SkillCardProps {
 
 export default function SkillCard({ skill }: SkillCardProps) {
     return (
-        <div className="group relative bg-white rounded-2xl border border-gray-100 hover:border-primary-500 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full">
+        <div className="group relative bg-white/60 backdrop-blur-lg rounded-2xl border border-white/40 hover:border-primary-400/50 shadow-lg shadow-gray-200/50 hover:shadow-xl hover:shadow-primary-500/10 transition-all duration-300 overflow-hidden flex flex-col h-full">
             <div className="p-5 flex-1 flex flex-col">
                 <div className="flex justify-between items-start mb-3">
                     <span className="px-2.5 py-1 bg-primary-50 text-primary-700 text-[10px] font-bold rounded-lg uppercase tracking-wider border border-primary-100">
@@ -66,7 +66,7 @@ export default function SkillCard({ skill }: SkillCardProps) {
             <div className="px-5 pb-5">
                 <Link
                     to={`/skills/${skill._id}`}
-                    className="flex items-center justify-between w-full bg-gray-50 hover:bg-primary-600 p-3 rounded-xl transition-all duration-200 group/btn"
+                    className="flex items-center justify-between w-full bg-white/50 backdrop-blur-sm hover:bg-primary-600 p-3 rounded-xl border border-white/60 hover:border-primary-600 transition-all duration-200 group/btn"
                 >
                     <div className="flex flex-col">
                         <span className="text-[10px] text-gray-500 font-bold uppercase group-hover/btn:text-primary-100 transition-colors">Rate</span>
