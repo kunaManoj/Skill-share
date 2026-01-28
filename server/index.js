@@ -75,33 +75,7 @@ io.on('connection', (socket) => {
         io.to(bookingId).emit('receive_message', newMessage);
     });
 
-    // WebRTC Signaling
-    socket.on('call_user', ({ userToCall, signalData, from }) => {
-        io.to(userToCall).emit('call_user', { signal: signalData, from });
-    });
 
-    socket.on('answer_call', (data) => {
-        io.to(data.to).emit('call_accepted', data.signal);
-    });
-
-    socket.on('join_video_room', (bookingId) => {
-        socket.join(bookingId);
-        // Notify others in room that a user connected (simple implementation for 2 people)
-        socket.to(bookingId).emit('user_joined_video', socket.id);
-    });
-
-    socket.on('ice_candidate', ({ to, candidate }) => {
-        io.to(to).emit('ice_candidate', { candidate, from: socket.id });
-    });
-
-    socket.on('disconnecting', () => {
-        const rooms = [...socket.rooms];
-        rooms.forEach((room) => {
-            if (room !== socket.id) {
-                socket.to(room).emit('user_left_video', socket.id);
-            }
-        });
-    });
 
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);

@@ -190,7 +190,7 @@ export default function ChatPage() {
                     <form onSubmit={handleSendMessage} className="flex gap-3">
                         <input
                             type="text"
-                            className="flex-1 bg-gray-100 border-none rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-primary-500:ring-primary-400 focus:bg-gray-800 transition-all text-gray-900 placeholder:text-gray-400:text-gray-500"
+                            className="flex-1 bg-white border border-gray-200 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-4 focus:ring-primary-100 focus:border-primary-500 transition-all text-gray-900 placeholder:text-gray-400 outline-none shadow-sm"
                             placeholder={booking?.status === 'completed' ? "Chat is closed" : "Message your peer..."}
                             value={newMessage}
                             onChange={(e) => setNewMessage(e.target.value)}

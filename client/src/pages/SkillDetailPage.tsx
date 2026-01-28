@@ -4,7 +4,7 @@ import { useUser } from '@clerk/clerk-react';
 import api, { getReviewsForSkill, deleteSkill } from '../lib/api';
 
 import BookingModal from '../components/BookingModal';
-import { Clock, Award, MessageSquare, ChevronLeft, Star, Globe, Zap, Trash2 } from 'lucide-react';
+import { Clock, Award, ChevronLeft, Star, Globe, Zap, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { format } from 'date-fns';
@@ -181,10 +181,7 @@ export default function SkillDetailPage() {
                                         >
                                             Book Now
                                         </button>
-                                        <button className="w-full py-4 px-6 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200:bg-gray-700 transition-all flex items-center justify-center gap-2">
-                                            <MessageSquare size={18} />
-                                            Message
-                                        </button>
+
                                     </>
                                 )}
                             </div>
