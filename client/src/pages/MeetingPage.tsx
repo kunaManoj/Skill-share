@@ -21,6 +21,20 @@ export default function MeetingPage() {
             const appID = Number(import.meta.env.VITE_ZEGO_APP_ID);
             const serverSecret = import.meta.env.VITE_ZEGO_SERVER_SECRET;
 
+            if (!appID || !serverSecret) {
+                console.error("ZegoCloud credentials missing. Check your .env file or Vercel Environment Variables.");
+                if (element) {
+                    element.innerHTML = `
+                        <div style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white;">
+                            <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">Configuration Error</h2>
+                            <p>Missing ZegoCloud AppID or ServerSecret.</p>
+                            <p style="font-size: 0.8rem; opacity: 0.7; margin-top: 0.5rem;">Please add VITE_ZEGO_APP_ID and VITE_ZEGO_SERVER_SECRET to your Vercel Project Settings.</p>
+                        </div>
+                    `;
+                }
+                return;
+            }
+
 
 
             const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
