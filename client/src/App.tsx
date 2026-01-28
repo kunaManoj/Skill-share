@@ -10,6 +10,7 @@ import WalletPage from './pages/WalletPage';
 import ChatPage from './pages/ChatPage';
 import MeetingPage from './pages/MeetingPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
+import NotificationsPage from './pages/NotificationsPage';
 import { SignedIn } from '@clerk/clerk-react';
 import { Toaster } from 'sonner';
 import SEO from './components/SEO';
@@ -89,6 +90,9 @@ function App() {
             } />
             <Route path="/admin" element={
               <SignedIn><AdminDashboardPage /></SignedIn>
+            } />
+            <Route path="/notifications" element={
+              <SignedIn><NotificationsPage /></SignedIn>
             } />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

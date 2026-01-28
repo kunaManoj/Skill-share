@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { io } from 'socket.io-client';
-import { getMessages, getBooking, updateBookingStatus, releaseFunds } from '../lib/api';
+import { getMessages, getBooking, updateBookingStatus, createPaymentOrder, verifyPayment } from '../lib/api';
 import { Send, CheckCircle, ChevronLeft, User, ShieldCheck, Zap } from 'lucide-react';
 import clsx from 'clsx';
 import { format } from 'date-fns';
@@ -62,31 +62,99 @@ export default function ChatPage() {
         setNewMessage('');
     };
 
-    const handleCompleteSession = async () => {
+    const isStudent = user?.id === booking?.studentId;
+
+    const handleSessionAction = async () => {
         if (!user || !booking) return;
-        if (!confirm('Are you sure you want to complete this session and release funds?')) return;
 
-        setCompleting(true);
-        try {
-            await updateBookingStatus(booking._id, 'completed');
-            await releaseFunds({
-                studentId: booking.studentId,
-                providerId: booking.providerId,
-                amount: booking.skillId.price,
-                bookingId: booking._id
-            });
+        // 1. Provider Action: End Session -> Request Payment
+        if (!isStudent && booking.status === 'approved') {
+            if (!confirm('End session and request payment from student?')) return;
 
-            setBooking((prev: any) => ({ ...prev, status: 'completed' }));
-            if (user.id === booking.studentId) {
-                setShowReviewModal(true);
-            } else {
-                toast.success('Session completed successfully!');
+            setCompleting(true);
+            try {
+                await updateBookingStatus(booking._id, 'payment_pending');
+                setBooking((prev: any) => ({ ...prev, status: 'payment_pending' }));
+                toast.success('Session ended. Payment requested from student.');
+            } catch (err) {
+                console.error(err);
+                toast.error('Failed to end session.');
+            } finally {
+                setCompleting(false);
             }
-        } catch (error) {
-            console.error('Completion failed:', error);
-            toast.error('Failed to complete session.');
-        } finally {
-            setCompleting(false);
+            return;
+        }
+
+        // 2. Student Action: Pay & Complete
+        if (isStudent) {
+            if (booking.status !== 'payment_pending') {
+                toast.error("Waiting for provider to end the session first.");
+                return;
+            }
+
+            if (!confirm('Proceed to payment?')) return; // Redundant confirmation if button says Pay
+
+            setCompleting(true);
+            try {
+                // Determine Amount
+                const amount = booking.skillId.price || 0;
+                if (amount <= 0) {
+                    await updateBookingStatus(booking._id, 'completed');
+                    setBooking((prev: any) => ({ ...prev, status: 'completed' }));
+                    setShowReviewModal(true);
+                    return;
+                }
+
+                // Create Order
+                const order = await createPaymentOrder(amount);
+
+                // Open Razorpay
+                const options = {
+                    key: import.meta.env.VITE_RAZORPAY_KEY_ID || '',
+                    amount: order.amount,
+                    currency: order.currency,
+                    name: "SkillShare Marketplace",
+                    description: `Payment for ${booking.skillId.title}`,
+                    order_id: order.id,
+                    handler: async function (response: any) {
+                        try {
+                            const verifyData = {
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature,
+                                bookingId: booking._id,
+                                amount: amount
+                            };
+
+                            await verifyPayment(verifyData);
+
+                            setBooking((prev: any) => ({ ...prev, status: 'completed' }));
+                            setShowReviewModal(true);
+                            toast.success('Payment successful!');
+                        } catch (verifyErr) {
+                            console.error('Verification failed', verifyErr);
+                            toast.error('Payment verification failed.');
+                        }
+                    },
+                    prefill: {
+                        name: user.fullName || "",
+                        email: user.primaryEmailAddress?.emailAddress || "",
+                    },
+                    theme: { color: "#7c3aed" }
+                };
+
+                const rzp1 = new (window as any).Razorpay(options);
+                rzp1.on('payment.failed', function (response: any) {
+                    toast.error(`Payment Failed: ${response.error.description}`);
+                });
+                rzp1.open();
+
+            } catch (error) {
+                console.error('Payment initiation failed:', error);
+                toast.error('Failed to initiate payment.');
+            } finally {
+                setCompleting(false);
+            }
         }
     };
 
@@ -131,19 +199,11 @@ export default function ChatPage() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        {booking?.status === 'completed' ? (
+                        {booking?.status === 'completed' && (
                             <div className="flex items-center gap-2 text-sky-600 bg-sky-50 px-5 py-2.5 rounded-2xl border border-sky-100 text-sm font-bold">
                                 <CheckCircle size={18} />
                                 Session Completed
                             </div>
-                        ) : (
-                            <button
-                                onClick={handleCompleteSession}
-                                disabled={completing}
-                                className="flex items-center gap-2 bg-gray-900 text-white px-6 py-2.5 rounded-2xl text-sm font-black transition-all shadow-xl shadow-gray-900/10 active:scale-95 disabled:opacity-50"
-                            >
-                                {completing ? 'Closing...' : 'Complete Session'}
-                            </button>
                         )}
                     </div>
                 </div>

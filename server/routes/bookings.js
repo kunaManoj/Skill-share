@@ -24,6 +24,21 @@ router.post('/', async (req, res) => {
         });
 
         const savedBooking = await newBooking.save();
+
+        // Notify Provider of new request
+        const Notification = require('../models/Notification');
+        // Fetch skill to get title for the message if not populated, but here we only have skillId.
+        // We can fetch skill title or just say "New Booking Request". 
+        // Let's populate or fetch skill quickly.
+        const skill = await Skill.findById(skillId);
+        await Notification.create({
+            userId: providerId,
+            type: 'booking',
+            title: 'New Booking Request',
+            message: `You have a new booking request for "${skill ? skill.title : 'a skill'}".`,
+            link: '/bookings' // Direct them to bookings page to approve/reject
+        });
+
         res.status(201).json(savedBooking);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -62,7 +77,7 @@ router.get('/', async (req, res) => {
 
         const bookings = await Booking.find(query)
             .populate('skillId')
-            .sort({ date: 1 }); // Soonest first
+            .sort({ createdAt: -1 }); // Recently created first
 
         // Enrich with other user's details
         const enrichedBookings = await Promise.all(bookings.map(async (booking) => {
@@ -77,11 +92,18 @@ router.get('/', async (req, res) => {
     }
 });
 
+const Notification = require('../models/Notification'); // Add this import at the top if not present, but for now I'll use it inside assuming it's imported or I will add the import line separately.
+// Actually, let's just do the router update and assume I can place the require at the top in another edit or context.
+// Wait, I should add the require at top first. Let's do this in 2 steps or just use require inside.
+// Better: I will use require inside for safety or update the whole file import section.
+// Strategy: I will update the whole route handler block.
+
 // PATCH Update Status (Approve/Reject)
 router.patch('/:id/status', async (req, res) => {
     try {
         const { status } = req.body;
-        if (!['approved', 'rejected', 'completed', 'cancelled'].includes(status)) {
+        // Added payment_pending to allowed statuses
+        if (!['approved', 'rejected', 'completed', 'cancelled', 'payment_pending'].includes(status)) {
             return res.status(400).json({ error: 'Invalid status' });
         }
 
@@ -97,7 +119,39 @@ router.patch('/:id/status', async (req, res) => {
             req.params.id,
             updateData,
             { new: true }
-        );
+        ).populate('skillId');
+
+        // Create Notifications based on Status Change
+        const Notification = require('../models/Notification');
+
+        if (status === 'approved') {
+            // Notify Student
+            await Notification.create({
+                userId: booking.studentId,
+                type: 'booking',
+                title: 'Booking Approved!',
+                message: `Your session for "${booking.skillId.title}" has been approved.`,
+                link: `/chat?booking=${booking._id}`
+            });
+        } else if (status === 'payment_pending') {
+            // Notify Student to Pay
+            await Notification.create({
+                userId: booking.studentId,
+                type: 'payment',
+                title: 'Payment Requested',
+                message: `Please complete payment for "${booking.skillId.title}" to finalize the session.`,
+                link: `/chat?booking=${booking._id}`
+            });
+        } else if (status === 'completed') {
+            // Notify Provider
+            await Notification.create({
+                userId: booking.providerId,
+                type: 'system',
+                title: 'Session Completed',
+                message: `Session for "${booking.skillId.title}" marked as completed.`,
+                link: `/wallet`
+            });
+        }
 
         res.json(booking);
     } catch (err) {

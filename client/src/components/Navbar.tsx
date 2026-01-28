@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { SignedIn, SignedOut, UserButton, useUser } from '@clerk/clerk-react';
-import { Menu, X, BookOpen, MessageSquare, Wallet, GraduationCap, Shield } from 'lucide-react';
+import { Menu, X, BookOpen, MessageSquare, Wallet, GraduationCap, Shield, Bell } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { devSyncUser } from '../lib/api';
 
@@ -8,6 +8,7 @@ export default function Navbar() {
     const { user } = useUser();
     const [isOpen, setIsOpen] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
+    // Removed showNotifications state
     const location = useLocation();
 
     // Dev: Auto-sync user to DB on load (Fixes webhook issues)
@@ -60,7 +61,10 @@ export default function Navbar() {
                             <NavLink to="/skills/new" label="Share a Skill" active={isActive('/skills/new')} />
                             <div className="h-6 w-px bg-gray-200 mx-2"></div>
                             <IconLink to="/bookings" icon={<BookOpen size={18} />} label="Bookings" active={isActive('/bookings')} />
-                            <IconLink to="/chat" icon={<MessageSquare size={18} />} label="Messages" active={isActive('/chat')} />
+
+
+                            <IconLink to="/notifications" icon={<Bell size={18} />} label="Notifications" active={isActive('/notifications')} />
+
                             <IconLink to="/wallet" icon={<Wallet size={18} />} label="Wallet" active={isActive('/wallet')} />
 
                             {isAdmin && (
