@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { Link } from 'react-router-dom';
 import { getBookings, updateBookingStatus, createPaymentOrder, verifyPayment } from '../lib/api';
-import { Loader2, Video, CheckCircle, X, ShieldCheck, Zap } from 'lucide-react';
+import { Loader2, Video, X } from 'lucide-react';
 import { toast } from 'sonner';
 import clsx from 'clsx';
 import { format } from 'date-fns';
