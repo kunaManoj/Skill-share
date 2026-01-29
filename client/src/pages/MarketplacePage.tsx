@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getSkills } from '../lib/api';
 import SkillCard from '../components/SkillCard';
 import { Search, Filter, SlidersHorizontal, ArrowDownUp } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { MarketplaceSkeleton } from '../components/Skeleton';
 import SEO from '../components/SEO';
+import { useUser } from '@clerk/clerk-react';
 
 const CATEGORIES = ['All', 'Academic', 'Programming', 'Music', 'Language', 'Art', 'Other'];
 const SORT_OPTIONS = [
@@ -16,6 +17,7 @@ const SORT_OPTIONS = [
 ];
 
 export default function MarketplacePage() {
+    const { user } = useUser();
     const [skills, setSkills] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -45,12 +47,13 @@ export default function MarketplacePage() {
     }, [selectedCategory, searchQuery]);
 
     const handleCategoryChange = (category: string) => {
+        const newParams = new URLSearchParams(searchParams);
         if (category === 'All') {
-            searchParams.delete('category');
+            newParams.delete('category');
         } else {
-            searchParams.set('category', category);
+            newParams.set('category', category);
         }
-        setSearchParams(searchParams);
+        setSearchParams(newParams);
     };
 
     const sortedSkills = useMemo(() => {
@@ -138,9 +141,10 @@ export default function MarketplacePage() {
                                 placeholder="Search skills..."
                                 value={searchQuery}
                                 onChange={(e) => {
-                                    if (e.target.value) searchParams.set('search', e.target.value);
-                                    else searchParams.delete('search');
-                                    setSearchParams(searchParams);
+                                    const newParams = new URLSearchParams(searchParams);
+                                    if (e.target.value) newParams.set('search', e.target.value);
+                                    else newParams.delete('search');
+                                    setSearchParams(newParams);
                                 }}
                             />
                         </div>
@@ -168,47 +172,118 @@ export default function MarketplacePage() {
 
             {/* Content Grid */}
             <div className="w-full px-4 sm:px-6 lg:px-8 py-4">
+                {/* View Toggles */}
+                {user && (
+                    <div className="mb-6 flex space-x-6 border-b border-gray-200">
+                        <button
+                            className={`py-2 px-1 text-sm font-bold border-b-2 transition-colors duration-200 ${searchParams.get('view') !== 'my-skills'
+                                ? 'border-primary-600 text-primary-600'
+                                : 'border-transparent text-gray-500 hover:text-gray-700'
+                                }`}
+                            onClick={() => {
+                                const newParams = new URLSearchParams(searchParams);
+                                newParams.delete('view');
+                                setSearchParams(newParams);
+                            }}
+                        >
+                            <span className="flex items-center gap-2">
+                                <Search size={16} /> Marketplace
+                            </span>
+                        </button>
+                        <button
+                            className={`py-2 px-1 text-sm font-bold border-b-2 transition-colors duration-200 ${searchParams.get('view') === 'my-skills'
+                                ? 'border-primary-600 text-primary-600'
+                                : 'border-transparent text-gray-500 hover:text-gray-700'
+                                }`}
+                            onClick={() => {
+                                const newParams = new URLSearchParams(searchParams);
+                                newParams.set('view', 'my-skills');
+                                setSearchParams(newParams);
+                            }}
+                        >
+                            My Listings
+                        </button>
+                    </div>
+                )}
+
                 {loading ? (
                     <MarketplaceSkeleton />
-                ) : sortedSkills.length > 0 ? (
-                    <motion.div
-                        initial="hidden"
-                        animate="show"
-                        variants={{
-                            hidden: { opacity: 0 },
-                            show: {
-                                opacity: 1,
-                                transition: {
-                                    staggerChildren: 0.1
-                                }
-                            }
-                        }}
-                        className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8"
-                    >
-                        {sortedSkills.map(skill => (
-                            <motion.div
-                                key={skill._id}
-                                variants={{
-                                    hidden: { opacity: 0, y: 20 },
-                                    show: { opacity: 1, y: 0 }
-                                }}
-                            >
-                                <SkillCard skill={skill} />
-                            </motion.div>
-                        ))}
-                    </motion.div>
                 ) : (
-                    <div className="text-center py-20 bg-white/50 backdrop-blur-lg rounded-2xl border border-white/40 border-dashed flex flex-col items-center shadow-lg">
-                        <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-gray-100">
-                            <Filter size={32} className="text-gray-400" />
-                        </div>
-                        <h3 className="text-xl font-bold text-gray-950 mb-2">No skills found</h3>
-                        <p className="text-gray-500 max-w-xs mx-auto text-sm font-medium">
-                            Try adjusting your filters or search term to discover more.
-                        </p>
-                    </div>
+                    <SkillsGrid
+                        key={searchParams.get('view') || 'marketplace'}
+                        skills={sortedSkills}
+                        view={searchParams.get('view') || 'marketplace'}
+                        currentUser={user}
+                    />
                 )}
             </div>
         </div>
+    );
+}
+
+function SkillsGrid({ skills, view, currentUser }: { skills: any[], view: string, currentUser: any }) {
+    // Filter skills based on view
+    const displayedSkills = skills.filter(skill => {
+        if (!currentUser) return true; // If no user, show all skills (marketplace view)
+        const isOwner = skill.providerId === currentUser.id;
+
+        if (view === 'my-skills') {
+            return isOwner;
+        } else {
+            return !isOwner; // In marketplace view, hide current user's skills
+        }
+    });
+
+    if (displayedSkills.length === 0) {
+        return (
+            <div className="text-center py-20 bg-white/50 backdrop-blur-lg rounded-2xl border border-white/40 border-dashed flex flex-col items-center shadow-lg">
+                <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-gray-100">
+                    <Filter size={32} className="text-gray-400" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-950 mb-2">
+                    {view === 'my-skills' ? 'No listings found' : 'No skills found'}
+                </h3>
+                <p className="text-gray-500 max-w-xs mx-auto text-sm font-medium">
+                    {view === 'my-skills'
+                        ? "You haven't listed any skills yet."
+                        : "Try adjusting your filters or check back later."}
+                </p>
+                {view === 'my-skills' && (
+                    <Link to="/add-skill" className="mt-4 px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-primary-500/20 hover:bg-primary-700 transition-colors">
+                        Create Listing
+                    </Link>
+                )}
+            </div>
+        );
+    }
+
+    return (
+        <motion.div
+            key={view}
+            initial="hidden"
+            animate="show"
+            variants={{
+                hidden: { opacity: 0 },
+                show: {
+                    opacity: 1,
+                    transition: {
+                        staggerChildren: 0.1
+                    }
+                }
+            }}
+            className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8"
+        >
+            {displayedSkills.map(skill => (
+                <motion.div
+                    key={skill._id}
+                    variants={{
+                        hidden: { opacity: 0, y: 20 },
+                        show: { opacity: 1, y: 0 }
+                    }}
+                >
+                    <SkillCard skill={skill} isOwner={view === 'my-skills'} />
+                </motion.div>
+            ))}
+        </motion.div>
     );
 }
