@@ -12,6 +12,8 @@ const skillSchema = new mongoose.Schema({
     price: { type: Number, required: true }, // Price per hour
     image: { type: String }, // URL to cover image
     experience: { type: String }, // e.g., "Intermediate", "Expert"
+    language: { type: String },
+    duration: { type: Number, default: 60 }, // Duration in minutes
     createdAt: { type: Date, default: Date.now }
 });
 

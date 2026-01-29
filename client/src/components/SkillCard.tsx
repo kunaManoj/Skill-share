@@ -8,6 +8,7 @@ interface SkillCardProps {
         category: string;
         price: number;
         experience: string;
+        language?: string;
         provider?: {
             firstName: string;
             lastName: string;
@@ -19,9 +20,14 @@ interface SkillCardProps {
     };
 }
 
+import { useUser } from '@clerk/clerk-react';
+import { toast } from 'sonner';
+
 export default function SkillCard({ skill }: SkillCardProps) {
+    const { user } = useUser();
+
     return (
-        <div className="group relative bg-white/60 backdrop-blur-lg rounded-2xl border border-white/40 hover:border-primary-400/50 shadow-lg shadow-gray-200/50 hover:shadow-xl hover:shadow-primary-500/10 transition-all duration-300 overflow-hidden flex flex-col h-full">
+        <div className="group relative bg-white/60 backdrop-blur-lg rounded-2xl border border-white/40 hover:border-primary-400/50 shadow-lg shadow-gray-200/50 hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-300 overflow-hidden flex flex-col h-full hover:-translate-y-2">
             <div className="p-5 flex-1 flex flex-col">
                 <div className="flex justify-between items-start mb-3">
                     <span className="px-2.5 py-1 bg-primary-50 text-primary-700 text-[10px] font-bold rounded-lg uppercase tracking-wider border border-primary-100">
@@ -66,6 +72,12 @@ export default function SkillCard({ skill }: SkillCardProps) {
             <div className="px-5 pb-5">
                 <Link
                     to={`/skills/${skill._id}`}
+                    onClick={(e) => {
+                        if (!user) {
+                            e.preventDefault();
+                            toast.error("Please login to continue with booking");
+                        }
+                    }}
                     className="flex items-center justify-between w-full bg-white/50 backdrop-blur-sm hover:bg-primary-600 p-3 rounded-xl border border-white/60 hover:border-primary-600 transition-all duration-200 group/btn"
                 >
                     <div className="flex flex-col">

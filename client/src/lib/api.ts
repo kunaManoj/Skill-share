@@ -42,6 +42,11 @@ export const getBooking = async (bookingId: string) => {
     return response.data;
 };
 
+export const markAttendance = async (bookingId: string, role: 'student' | 'provider') => {
+    const response = await api.patch(`/bookings/${bookingId}/attendance`, { role });
+    return response.data;
+};
+
 // Payment APIs
 export const createPaymentOrder = async (amount: number) => {
     const response = await api.post('/payment/create-order', { amount });
@@ -56,6 +61,38 @@ export const verifyPayment = async (data: {
     amount: number
 }) => {
     const response = await api.post('/payment/verify-payment', data);
+    return response.data;
+};
+
+// Escrow Payment APIs (Pre-payment flow)
+export const createEscrowOrder = async (amount: number, bookingId: string) => {
+    const response = await api.post('/payment/create-escrow-order', { amount, bookingId });
+    return response.data;
+};
+
+export const verifyEscrowPayment = async (data: {
+    razorpay_order_id: string,
+    razorpay_payment_id: string,
+    razorpay_signature: string,
+    bookingId: string,
+    amount: number
+}) => {
+    const response = await api.post('/payment/verify-escrow-payment', data);
+    return response.data;
+};
+
+export const releaseEscrow = async (bookingId: string) => {
+    const response = await api.post('/payment/release-escrow', { bookingId });
+    return response.data;
+};
+
+export const refundEscrow = async (bookingId: string, reason?: string) => {
+    const response = await api.post('/payment/refund-escrow', { bookingId, reason });
+    return response.data;
+};
+
+export const claimNoShowRefund = async (bookingId: string) => {
+    const response = await api.post('/payment/claim-no-show-refund', { bookingId });
     return response.data;
 };
 

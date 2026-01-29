@@ -80,17 +80,17 @@ export default function Navbar() {
                             <IconLink to="/notifications" icon={<Bell size={18} />} label="Alerts" active={isActive('/notifications')} />
                             <IconLink to="/wallet" icon={<Wallet size={18} />} label="Wallet" active={isActive('/wallet')} />
 
-                            {isAdmin && (
-                                <Link to="/admin" className="ml-2 px-3 py-1 bg-gray-900 text-white text-xs font-bold rounded-lg uppercase tracking-wider hover:bg-gray-800 transition-colors">
-                                    Admin
-                                </Link>
-                            )}
                         </SignedIn>
                     </div>
 
                     {/* Auth & Profile */}
                     <div className="flex items-center gap-4">
                         <SignedIn>
+                            {isAdmin && (
+                                <Link to="/admin" className="mr-2 px-3 py-1.5 bg-gray-900 text-white text-[10px] font-black rounded-lg uppercase tracking-widest hover:bg-gray-800 transition-all shadow-lg shadow-gray-900/20">
+                                    Admin
+                                </Link>
+                            )}
                             <div className="ml-1">
                                 <UserButton
                                     appearance={{

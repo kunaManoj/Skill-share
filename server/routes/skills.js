@@ -48,7 +48,7 @@ router.get('/:id', async (req, res) => {
 // POST create skill
 router.post('/', async (req, res) => { // Auth middleware needed here later
     try {
-        const { providerId, title, description, category, price, experience } = req.body;
+        const { providerId, title, description, category, price, experience, language, duration } = req.body;
 
         const newSkill = new Skill({
             providerId,
@@ -56,7 +56,9 @@ router.post('/', async (req, res) => { // Auth middleware needed here later
             description,
             category,
             price,
-            experience
+            experience,
+            language,
+            duration: duration || 60
         });
 
         const savedSkill = await newSkill.save();

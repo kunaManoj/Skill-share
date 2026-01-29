@@ -75,8 +75,8 @@ export default function SkillDetailPage() {
 
                             <div className="flex flex-wrap gap-3 mb-8">
                                 <InfoBadge icon={<Award size={16} />} label={skill.experience} />
-                                <InfoBadge icon={<Clock size={16} />} label="60 min" />
-                                <InfoBadge icon={<Globe size={16} />} label="English / Hindi" />
+                                <InfoBadge icon={<Clock size={16} />} label={`${skill.duration || 60} min`} />
+                                <InfoBadge icon={<Globe size={16} />} label={skill.language || "English"} />
                             </div>
 
                             <div className="space-y-4">
