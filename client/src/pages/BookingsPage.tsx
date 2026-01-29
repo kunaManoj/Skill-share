@@ -8,6 +8,8 @@ import clsx from 'clsx';
 import { format } from 'date-fns';
 import ReviewModal from '../components/ReviewModal';
 
+import { motion, AnimatePresence } from 'framer-motion';
+
 export default function BookingsPage() {
     const { user } = useUser();
     const [role, setRole] = useState<'student' | 'provider'>('student');
@@ -180,35 +182,40 @@ export default function BookingsPage() {
     };
 
     return (
-        <div className="min-h-[calc(100vh-64px)] pb-20">
+        <div className="min-h-[calc(100vh-64px)] pb-20 relative overflow-hidden">
+            {/* Ambient Background */}
+            <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-primary-100/30 rounded-full blur-[120px] -z-10 pointer-events-none mix-blend-multiply" />
+            <div className="absolute top-40 right-0 w-[500px] h-[500px] bg-purple-100/30 rounded-full blur-[100px] -z-10 pointer-events-none mix-blend-multiply" />
+
             {/* Header section with role switcher */}
-            <div className="bg-white border-b border-gray-100 mb-6 transition-colors duration-300">
-                <div className="w-full px-6 xl:px-12 py-6 md:py-10">
+            <div className="bg-white/60 backdrop-blur-xl border-b border-white/30 mb-6 transition-all duration-300 sticky top-0 z-20">
+                <div className="w-full px-6 xl:px-12 py-6 md:py-8">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div className="space-y-1">
-                            <h1 className="text-2xl font-black text-black tracking-tight">Your <span className="text-primary-600">Bookings</span></h1>
+                            <h1 className="text-2xl font-black text-gray-900 tracking-tight">Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-indigo-600">Bookings</span></h1>
                             <p className="text-[10px] text-gray-500 font-bold tracking-widest uppercase">Learning & Teaching</p>
                         </div>
 
-                        <div className="bg-gray-50 p-1 rounded-xl flex items-center border border-gray-200">
-                            <button
-                                onClick={() => setRole('student')}
-                                className={clsx(
-                                    "px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-200",
-                                    role === 'student' ? "bg-white text-black shadow-sm" : "text-gray-500"
-                                )}
-                            >
-                                Learning
-                            </button>
-                            <button
-                                onClick={() => setRole('provider')}
-                                className={clsx(
-                                    "px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-200",
-                                    role === 'provider' ? "bg-white text-black shadow-sm" : "text-gray-500"
-                                )}
-                            >
-                                Teaching
-                            </button>
+                        <div className="bg-gray-100/50 p-1.5 rounded-xl flex items-center border border-gray-200/50 relative">
+                            {(['student', 'provider'] as const).map((tabRole) => (
+                                <button
+                                    key={tabRole}
+                                    onClick={() => setRole(tabRole)}
+                                    className={clsx(
+                                        "relative px-6 py-2 rounded-lg text-xs font-bold transition-colors duration-200 z-10 w-32",
+                                        role === tabRole ? "text-gray-900" : "text-gray-500 hover:text-gray-700"
+                                    )}
+                                >
+                                    {role === tabRole && (
+                                        <motion.div
+                                            layoutId="activeTab"
+                                            className="absolute inset-0 bg-white shadow-sm rounded-lg border border-gray-200/50"
+                                            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                                        />
+                                    )}
+                                    <span className="relative z-10">{tabRole === 'student' ? 'Learning' : 'Teaching'}</span>
+                                </button>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -216,174 +223,236 @@ export default function BookingsPage() {
 
             <div className="w-full px-6 xl:px-12 pb-10">
                 {loading ? (
-                    <div className="flex flex-col items-center justify-center py-20">
-                        <Loader2 className="animate-spin text-primary-600" size={32} />
+                    <div className="flex flex-col items-center justify-center py-32">
+                        <Loader2 className="animate-spin text-primary-600" size={40} />
                     </div>
                 ) : bookings.length === 0 ? (
-                    <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-200 flex flex-col items-center">
-                        <h3 className="text-lg font-bold text-black mb-2">No active sessions</h3>
-                        <Link to="/marketplace" className="text-primary-600 font-black text-xs hover:underline">Browse Market</Link>
-                    </div>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-center py-32 bg-white/60 backdrop-blur-sm rounded-3xl border border-dashed border-gray-200 flex flex-col items-center max-w-2xl mx-auto"
+                    >
+                        <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                            <Video className="text-gray-300" size={32} />
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">No active sessions</h3>
+                        <p className="text-gray-500 text-sm mb-6 max-w-sm mx-auto">
+                            {role === 'student'
+                                ? "You haven't booked any sessions yet. Find a skill to learn!"
+                                : "You haven't received any booking requests yet. Share your profile!"}
+                        </p>
+                        <Link
+                            to="/marketplace"
+                            className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl shadow-lg shadow-primary-500/20 transition-all hover:-translate-y-1 active:scale-95 text-sm"
+                        >
+                            Browse Marketplace
+                        </Link>
+                    </motion.div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {bookings.map((booking) => (
-                            <div key={booking._id} className="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 p-6 flex flex-col">
-                                {/* Status & Payment Badges */}
-                                <div className="flex items-start justify-between mb-4 gap-2">
-                                    <div className="flex flex-wrap gap-2">
-                                        <span className={clsx("px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border", getStatusStyles(booking.status))}>
-                                            {booking.status === 'requested' ? 'Awaiting Approval' : booking.status}
-                                        </span>
-                                        {getPaymentBadge(booking.paymentStatus)}
-                                    </div>
-                                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest flex-shrink-0">
-                                        REF {booking._id.slice(-4).toUpperCase()}
-                                    </span>
-                                </div>
+                    <motion.div
+                        layout
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                    >
+                        <AnimatePresence mode="popLayout">
+                            {bookings.map((booking, index) => (
+                                <motion.div
+                                    layout
+                                    key={booking._id}
+                                    className="group bg-white/80 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm shadow-gray-100/50 hover:shadow-md hover:shadow-primary-500/10 hover:border-primary-100/50 transition-all duration-300 p-4 flex flex-col relative overflow-hidden"
+                                    initial={{ opacity: 0, scale: 0.98, y: 10 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.2 } }}
+                                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                                    whileHover={{ y: -2, transition: { duration: 0.2 } }}
+                                >
+                                    {/* Hover gradient glow */}
+                                    <div className="absolute inset-0 bg-gradient-to-br from-primary-500/0 via-transparent to-transparent opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none" />
 
-                                <h3 className="text-lg font-bold text-black mb-4 line-clamp-1">
-                                    {booking.skillId?.title || 'Skill Session'}
-                                </h3>
-
-                                {/* Escrow Amount Display */}
-                                {booking.escrow && (
-                                    <div className="mb-4 p-3 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-emerald-100">
-                                        <div className="flex items-center justify-between">
-                                            <span className="text-xs font-bold text-emerald-700 flex items-center gap-1.5">
-                                                <Shield size={14} />
-                                                {booking.paymentStatus === 'released' ? 'Amount Received' : 'Secured Amount'}
+                                    {/* Status & Payment Badges */}
+                                    <div className="flex items-start justify-between mb-4 gap-2 relative z-10">
+                                        <div className="flex flex-wrap gap-2">
+                                            <span className={clsx("px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border shadow-sm", getStatusStyles(booking.status))}>
+                                                {booking.status === 'requested' ? 'Awaiting Approval' : booking.status}
                                             </span>
-                                            <span className="text-lg font-black text-emerald-700">₹{booking.escrow.amount}</span>
+                                            {getPaymentBadge(booking.paymentStatus)}
+                                        </div>
+                                        <span className="text-[9px] font-bold text-gray-300 group-hover:text-primary-300 transition-colors uppercase tracking-widest flex-shrink-0">
+                                            REF {booking._id.slice(-4).toUpperCase()}
+                                        </span>
+                                    </div>
+
+                                    <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1 relative z-10 group-hover:text-primary-700 transition-colors">
+                                        {booking.skillId?.title || 'Skill Session'}
+                                    </h3>
+
+                                    {/* Escrow Amount Display */}
+                                    {booking.escrow && (
+                                        <div className="mb-3 p-2.5 bg-gradient-to-br from-emerald-50/80 to-teal-50/80 backdrop-blur-sm rounded-xl border border-emerald-100/60 relative z-10 group-hover:shadow-sm transition-shadow">
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-[10px] uppercase tracking-wider font-bold text-emerald-700 flex items-center gap-1.5">
+                                                    <Shield size={14} />
+                                                    {booking.paymentStatus === 'released' ? 'Amount Received' : 'Secured Amount'}
+                                                </span>
+                                                <span className="text-base font-black text-emerald-700">₹{booking.escrow.amount}</span>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div className="grid grid-cols-2 gap-2 mb-3 relative z-10">
+                                        <div className="p-2 bg-gray-50/80 rounded-xl border border-gray-100 group-hover:bg-white group-hover:border-primary-100/30 transition-colors">
+                                            <p className="text-[9px] font-bold text-gray-400 uppercase mb-1">Date</p>
+                                            <p className="text-xs font-bold text-gray-900">{format(new Date(booking.date), 'MMM d')}</p>
+                                        </div>
+                                        <div className="p-2 bg-gray-50/80 rounded-xl border border-gray-100 group-hover:bg-white group-hover:border-primary-100/30 transition-colors">
+                                            <p className="text-[9px] font-bold text-gray-400 uppercase mb-1">Time</p>
+                                            <p className="text-xs font-bold text-gray-900">{format(new Date(booking.date), 'p')}</p>
                                         </div>
                                     </div>
-                                )}
 
-                                <div className="grid grid-cols-2 gap-3 mb-6">
-                                    <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
-                                        <p className="text-[9px] font-bold text-gray-400 uppercase mb-1">Date</p>
-                                        <p className="text-xs font-bold text-black">{format(new Date(booking.date), 'MMM d')}</p>
-                                    </div>
-                                    <div className="p-3 bg-gray-50 rounded-xl border border-gray-100">
-                                        <p className="text-[9px] font-bold text-gray-400 uppercase mb-1">Time</p>
-                                        <p className="text-xs font-bold text-black">{format(new Date(booking.date), 'p')}</p>
-                                    </div>
-                                </div>
-
-                                <div className="mt-auto flex items-center justify-between pt-4 border-t border-gray-50">
-                                    <p className="text-xs font-bold text-gray-500">
-                                        {booking.otherUser?.firstName}
-                                    </p>
-
-                                    <div className="flex items-center gap-2">
-                                        {/* Provider Actions: Approve/Reject for Requested status */}
-                                        {booking.status === 'requested' && role === 'provider' && (
-                                            <div className="flex gap-2">
-                                                <button
-                                                    onClick={() => handleApprove(booking._id)}
-                                                    disabled={processingId === booking._id}
-                                                    className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-[10px] font-black shadow-lg shadow-emerald-600/10 hover:bg-emerald-700 transition-colors disabled:opacity-50"
-                                                >
-                                                    {processingId === booking._id ? <Loader2 size={14} className="animate-spin" /> : 'Approve'}
-                                                </button>
-                                                <button
-                                                    onClick={() => handleReject(booking)}
-                                                    disabled={processingId === booking._id}
-                                                    className="px-4 py-2 bg-white border border-rose-200 text-rose-600 rounded-lg text-[10px] font-black hover:bg-rose-50 transition-colors disabled:opacity-50"
-                                                >
-                                                    Reject
-                                                </button>
+                                    <div className="mt-auto flex items-center justify-between pt-3 border-t border-gray-100 relative z-10">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-100 to-primary-50 text-primary-600 flex items-center justify-center text-xs font-black ring-2 ring-white shadow-sm">
+                                                {booking.otherUser?.firstName?.[0]}
                                             </div>
-                                        )}
+                                            <p className="text-xs font-bold text-gray-600">
+                                                {booking.otherUser?.firstName}
+                                            </p>
+                                        </div>
 
-                                        {/* Student: Cancel if requested (before approval) */}
-                                        {booking.status === 'requested' && role === 'student' && (
-                                            <button
-                                                onClick={() => handleCancelBooking(booking)}
-                                                disabled={processingId === booking._id}
-                                                className="px-3 py-2 bg-red-50 text-red-600 border border-red-100 rounded-lg text-[10px] font-bold hover:bg-red-100 transition-colors flex items-center gap-1 disabled:opacity-50"
-                                            >
-                                                {processingId === booking._id ? <Loader2 size={14} className="animate-spin" /> : <><X size={14} /> Cancel</>}
-                                            </button>
-                                        )}
-
-                                        {/* Active Session Actions */}
-                                        {booking.status === 'approved' && (
-                                            <>
-                                                {/* Chat Link */}
-                                                <Link
-                                                    to={`/chat?booking=${booking._id}`}
-                                                    className="px-3 py-2 bg-primary-50 text-primary-600 border border-primary-100 rounded-lg text-[10px] font-black hover:bg-primary-100 transition-colors"
-                                                >
-                                                    Chat
-                                                </Link>
-
-                                                {/* Join Meeting */}
-                                                {booking.meetingLink && (
-                                                    <Link
-                                                        to={`/meeting/${booking._id}`}
-                                                        className="px-3 py-2 bg-blue-600 text-white rounded-lg text-[10px] font-black shadow-lg shadow-blue-500/10 flex items-center gap-1.5 hover:bg-blue-700 transition-colors"
+                                        <div className="flex items-center gap-2">
+                                            {/* Provider Actions: Approve/Reject for Requested status */}
+                                            {booking.status === 'requested' && role === 'provider' && (
+                                                <div className="flex gap-2">
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.05 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                        onClick={() => handleApprove(booking._id)}
+                                                        disabled={processingId === booking._id}
+                                                        className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-[10px] font-black shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 transition-colors disabled:opacity-50"
                                                     >
-                                                        <Video size={14} />
+                                                        {processingId === booking._id ? <Loader2 size={14} className="animate-spin" /> : 'Approve'}
+                                                    </motion.button>
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.05 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                        onClick={() => handleReject(booking)}
+                                                        disabled={processingId === booking._id}
+                                                        className="px-4 py-2 bg-white border border-rose-200 text-rose-600 rounded-lg text-[10px] font-black hover:bg-rose-50 transition-colors disabled:opacity-50"
+                                                    >
+                                                        Reject
+                                                    </motion.button>
+                                                </div>
+                                            )}
+
+                                            {/* Student: Cancel if requested (before approval) */}
+                                            {booking.status === 'requested' && role === 'student' && (
+                                                <motion.button
+                                                    whileHover={{ scale: 1.05 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                    onClick={() => handleCancelBooking(booking)}
+                                                    disabled={processingId === booking._id}
+                                                    className="px-3 py-2 bg-red-50 text-red-600 border border-red-100 rounded-lg text-[10px] font-bold hover:bg-red-100 transition-colors flex items-center gap-1 disabled:opacity-50"
+                                                >
+                                                    {processingId === booking._id ? <Loader2 size={14} className="animate-spin" /> : <><X size={14} /> Cancel</>}
+                                                </motion.button>
+                                            )}
+
+                                            {/* Active Session Actions */}
+                                            {booking.status === 'approved' && (
+                                                <>
+                                                    {/* Chat Link */}
+                                                    <Link to={`/chat?booking=${booking._id}`}>
+                                                        <motion.div
+                                                            whileHover={{ scale: 1.05 }}
+                                                            whileTap={{ scale: 0.95 }}
+                                                            className="px-3 py-2 bg-white text-gray-600 border border-gray-200 rounded-lg text-[10px] font-black hover:bg-gray-50 hover:border-gray-300 transition-colors shadow-sm flex items-center justify-center cursor-pointer"
+                                                        >
+                                                            Chat
+                                                        </motion.div>
                                                     </Link>
-                                                )}
 
-                                                {/* Provider: End Session Button */}
-                                                {role === 'provider' && (
-                                                    <div className="relative group/tooltip">
-                                                        <button
-                                                            onClick={() => handleEndSession(booking)}
-                                                            disabled={processingId === booking._id || !booking.providerJoined}
-                                                            className={clsx(
-                                                                "px-3 py-2 rounded-lg text-[10px] font-bold flex items-center gap-1.5 transition-colors disabled:opacity-50",
-                                                                !booking.providerJoined
-                                                                    ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200"
-                                                                    : "bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700"
-                                                            )}
+                                                    {/* Join Meeting */}
+                                                    <Link to={`/meeting/${booking._id}`}>
+                                                        <motion.div
+                                                            whileHover={{ scale: 1.05 }}
+                                                            whileTap={{ scale: 0.95 }}
+                                                            className="px-3 py-2 bg-blue-600 text-white rounded-lg text-[10px] font-black shadow-lg shadow-blue-500/20 flex items-center gap-1.5 hover:bg-blue-700 transition-colors cursor-pointer"
                                                         >
-                                                            {processingId === booking._id ? <Loader2 size={14} className="animate-spin" /> : 'End & Release ₹'}
-                                                        </button>
-                                                        {!booking.providerJoined && (
-                                                            <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-[9px] rounded whitespace-nowrap opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-10 w-fit">
-                                                                Join meeting first
+                                                            <Video size={14} />
+                                                            {(role === 'provider' ? booking.providerJoined : booking.studentJoined) ? 'Rejoin' : 'Join'}
+                                                        </motion.div>
+                                                    </Link>
+
+                                                    {/* Provider: End Session Button */}
+                                                    {role === 'provider' && (() => {
+                                                        const duration = booking.duration || 60;
+                                                        const providerOnline = booking.providerOnlineMinutes || 0;
+                                                        const requiredTime = duration * 0.9;
+                                                        const canEndSession = providerOnline >= requiredTime;
+
+                                                        return (
+                                                            <div className="relative group/tooltip">
+                                                                <motion.button
+                                                                    whileHover={canEndSession ? { scale: 1.05 } : {}}
+                                                                    whileTap={canEndSession ? { scale: 0.95 } : {}}
+                                                                    onClick={() => handleEndSession(booking)}
+                                                                    disabled={processingId === booking._id || !canEndSession}
+                                                                    className={clsx(
+                                                                        "px-3 py-2 rounded-lg text-[10px] font-bold flex items-center gap-1.5 transition-colors disabled:opacity-50 shadow-md",
+                                                                        !canEndSession
+                                                                            ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200 shadow-none"
+                                                                            : "bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700 shadow-emerald-500/20"
+                                                                    )}
+                                                                >
+                                                                    {processingId === booking._id ? <Loader2 size={14} className="animate-spin" /> : 'End Session'}
+                                                                </motion.button>
+
+                                                                {!canEndSession && (
+                                                                    <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900/90 backdrop-blur-sm text-white text-[9px] rounded-md whitespace-nowrap opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-10 w-fit">
+                                                                        {`Need ${Math.ceil(requiredTime - providerOnline)} more mins to claim`}
+                                                                    </div>
+                                                                )}
                                                             </div>
+                                                        );
+                                                    })()}
+                                                    {/* Student: Claim Refund if Provider No-Show or Left Early */}
+                                                    {role === 'student' &&
+                                                        new Date() > new Date(new Date(booking.date).getTime() + (booking.duration || 60) * 60000) &&
+                                                        (booking.providerOnlineMinutes || 0) < ((booking.duration || 60) * 0.9) && (
+                                                            <motion.button
+                                                                whileHover={{ scale: 1.05 }}
+                                                                whileTap={{ scale: 0.95 }}
+                                                                onClick={() => handleClaimRefund(booking)}
+                                                                disabled={processingId === booking._id}
+                                                                className="px-3 py-2 bg-orange-50 text-orange-600 border border-orange-100 rounded-lg text-[10px] font-bold hover:bg-orange-100 transition-colors flex items-center gap-1 disabled:opacity-50"
+                                                                title="Provider missed session? Claim refund."
+                                                            >
+                                                                {processingId === booking._id ? <Loader2 size={14} className="animate-spin" /> : <><AlertCircle size={14} /> Claim Refund</>}
+                                                            </motion.button>
                                                         )}
-                                                    </div>
-                                                )}
-                                                {/* Student: Claim Refund if Provider No-Show */}
-                                                {role === 'student' &&
-                                                    new Date() > new Date(new Date(booking.date).getTime() + (booking.duration || 60) * 60000) &&
-                                                    !booking.providerJoined && (
-                                                        <button
-                                                            onClick={() => handleClaimRefund(booking)}
-                                                            disabled={processingId === booking._id}
-                                                            className="px-3 py-2 bg-orange-50 text-orange-600 border border-orange-100 rounded-lg text-[10px] font-bold hover:bg-orange-100 transition-colors flex items-center gap-1 disabled:opacity-50"
-                                                            title="Provider missed session? Claim refund."
-                                                        >
-                                                            {processingId === booking._id ? <Loader2 size={14} className="animate-spin" /> : <><AlertCircle size={14} /> Claim Refund</>}
-                                                        </button>
-                                                    )}
-                                            </>
-                                        )}
+                                                </>
+                                            )}
 
-                                        {/* Completed Status */}
-                                        {booking.status === 'completed' && (
-                                            <span className="flex items-center gap-1 px-3 py-2 bg-sky-50 text-sky-700 rounded-lg text-[10px] font-bold">
-                                                <CheckCircle size={14} />
-                                                Completed
-                                            </span>
-                                        )}
+                                            {/* Completed Status */}
+                                            {booking.status === 'completed' && (
+                                                <span className="flex items-center gap-1 px-3 py-2 bg-sky-50 text-sky-700 rounded-lg text-[10px] font-bold border border-sky-100">
+                                                    <CheckCircle size={14} />
+                                                    Completed
+                                                </span>
+                                            )}
 
-                                        {/* Cancelled/Rejected with Refund Info */}
-                                        {(booking.status === 'cancelled' || booking.status === 'rejected') && booking.paymentStatus === 'refunded' && (
-                                            <span className="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded">
-                                                Refunded
-                                            </span>
-                                        )}
+                                            {/* Cancelled/Rejected with Refund Info */}
+                                            {(booking.status === 'cancelled' || booking.status === 'rejected') && booking.paymentStatus === 'refunded' && (
+                                                <span className="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-1 rounded border border-orange-100">
+                                                    Refunded
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    </motion.div>
                 )}
             </div>
 

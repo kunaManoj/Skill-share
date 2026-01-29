@@ -228,4 +228,25 @@ router.patch('/:id/attendance', async (req, res) => {
     }
 });
 
+// PATCH Update Session Duration (Heartbeat every minute)
+router.patch('/:id/heartbeat', async (req, res) => {
+    try {
+        const { role, durationIncr = 1 } = req.body; // default increment 1 minute
+        if (!['student', 'provider'].includes(role)) {
+            return res.status(400).json({ error: 'Invalid role' });
+        }
+
+        const updateField = role === 'provider' ? 'providerOnlineMinutes' : 'studentOnlineMinutes';
+
+        const booking = await Booking.findByIdAndUpdate(
+            req.params.id,
+            { $inc: { [updateField]: durationIncr } },
+            { new: true }
+        );
+        res.json({ success: true, [updateField]: booking[updateField] });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 module.exports = router;

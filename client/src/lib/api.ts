@@ -47,6 +47,11 @@ export const markAttendance = async (bookingId: string, role: 'student' | 'provi
     return response.data;
 };
 
+export const sendHeartbeat = async (bookingId: string, role: 'student' | 'provider', durationIncr: number = 1) => {
+    const response = await api.patch(`/bookings/${bookingId}/heartbeat`, { role, durationIncr });
+    return response.data;
+};
+
 // Payment APIs
 export const createPaymentOrder = async (amount: number) => {
     const response = await api.post('/payment/create-order', { amount });

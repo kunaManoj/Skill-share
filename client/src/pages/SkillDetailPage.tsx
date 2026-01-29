@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react';
 import api, { getReviewsForSkill, deleteSkill } from '../lib/api';
@@ -55,21 +56,47 @@ export default function SkillDetailPage() {
                 description={skill.description}
                 type="article"
             />
+            {/* Ambient Background */}
+            <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-primary-100/30 rounded-full blur-[120px] -z-10 pointer-events-none mix-blend-multiply" />
+            <div className="absolute top-40 right-0 w-[500px] h-[500px] bg-purple-100/30 rounded-full blur-[100px] -z-10 pointer-events-none mix-blend-multiply" />
+
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                 <Link to="/marketplace" className="inline-flex items-center gap-1.5 text-gray-500 hover:text-primary-600 font-bold text-xs mb-6 transition-colors group">
                     <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
                     Back
                 </Link>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <motion.div
+                    initial="hidden"
+                    animate="show"
+                    variants={{
+                        hidden: { opacity: 0 },
+                        show: {
+                            opacity: 1,
+                            transition: {
+                                staggerChildren: 0.2
+                            }
+                        }
+                    }}
+                    className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+                >
                     {/* Left Column: Main Info */}
-                    <div className="lg:col-span-2 space-y-6">
-                        <div className="bg-white rounded-2xl p-6 md:p-10 border border-gray-200 shadow-sm transition-colors duration-300">
+                    <motion.div
+                        variants={{
+                            hidden: { opacity: 0, x: -20 },
+                            show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "easeOut" } }
+                        }}
+                        className="lg:col-span-2 space-y-6"
+                    >
+                        <motion.div
+                            whileHover={{ y: -2 }}
+                            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 md:p-10 border border-white/60 shadow-xl shadow-gray-100/50 hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-300"
+                        >
                             <span className="inline-flex items-center px-3 py-1 rounded-lg bg-primary-50 text-primary-700 text-[10px] font-bold uppercase tracking-wider border border-primary-100 mb-4">
                                 {skill.category}
                             </span>
 
-                            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 leading-tight">
+                            <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 leading-tight tracking-tight">
                                 {skill.title}
                             </h1>
 
@@ -85,13 +112,16 @@ export default function SkillDetailPage() {
                                     {skill.description}
                                 </p>
                             </div>
-                        </div>
+                        </motion.div>
 
                         {/* Reviews Section */}
-                        <div className="bg-white rounded-2xl p-6 md:p-10 border border-gray-200 shadow-sm transition-colors duration-300">
+                        <motion.div
+                            whileHover={{ y: -2 }}
+                            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 md:p-10 border border-white/60 shadow-xl shadow-gray-100/50 hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-300"
+                        >
                             <div className="flex items-center justify-between mb-8">
                                 <h2 className="text-xl font-bold text-gray-900">Reviews</h2>
-                                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 rounded-lg border border-gray-100">
+                                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50/50 rounded-lg border border-gray-100">
                                     <Star size={16} className="text-amber-500" fill="currentColor" />
                                     <span className="text-sm font-bold text-gray-900">
                                         {skill.provider?.averageRating?.toFixed(1) || '0.0'}
@@ -105,7 +135,7 @@ export default function SkillDetailPage() {
                                     <div className="text-center py-8 text-gray-400 italic text-sm">No reviews yet.</div>
                                 ) : (
                                     reviews.map((review: any) => (
-                                        <div key={review._id} className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                                        <div key={review._id} className="bg-gray-50/50 rounded-2xl p-4 border border-gray-100 hover:bg-gray-50 transition-colors">
                                             <div className="flex justify-between items-start mb-3">
                                                 <div className="flex items-center gap-2">
                                                     {review.reviewerImage ? (
@@ -135,13 +165,24 @@ export default function SkillDetailPage() {
                                     ))
                                 )}
                             </div>
-                        </div>
-                    </div>
+                        </motion.div>
+                    </motion.div>
 
                     {/* Right Column: Booking Card */}
-                    <div className="space-y-6">
-                        <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-xl transition-colors duration-300">
-                            <div className="mb-6">
+                    <motion.div
+                        variants={{
+                            hidden: { opacity: 0, x: 20 },
+                            show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: "easeOut" } }
+                        }}
+                        className="space-y-6"
+                    >
+                        <motion.div
+                            whileHover={{ y: -5 }}
+                            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/60 shadow-xl shadow-gray-100/50 hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-300 relative overflow-hidden"
+                        >
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary-100/50 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+
+                            <div className="mb-6 relative z-10">
                                 <span className="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Price</span>
                                 <div className="flex items-baseline gap-1.5 mt-1">
                                     <span className="text-4xl font-black text-gray-900">₹{skill.price}</span>
@@ -149,7 +190,7 @@ export default function SkillDetailPage() {
                                 </div>
                             </div>
 
-                            <div className="space-y-3">
+                            <div className="space-y-3 relative z-10">
                                 {user && user.id === skill.providerId ? (
                                     <button
                                         onClick={async () => {
@@ -172,28 +213,33 @@ export default function SkillDetailPage() {
                                 ) : (
 
                                     <>
-                                        <button
+                                        <motion.button
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
                                             onClick={() => {
                                                 if (!user) navigate('/sign-in');
                                                 else setIsBookingOpen(true);
                                             }}
-                                            className="w-full py-4 px-6 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl shadow-lg shadow-primary-500/10 transition-all hover:-translate-y-0.5"
+                                            className="w-full py-4 px-6 bg-gray-900 hover:bg-black text-white font-bold rounded-xl shadow-lg shadow-gray-900/20 transition-all"
                                         >
                                             Book Now
-                                        </button>
+                                        </motion.button>
 
                                     </>
                                 )}
                             </div>
-                        </div>
+                        </motion.div>
 
                         {/* Provider Stats Card */}
-                        <div className="bg-white rounded-2xl p-6 border border-gray-200 transition-colors duration-300">
+                        <motion.div
+                            whileHover={{ y: -2 }}
+                            className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/60 shadow-xl shadow-gray-100/50 hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-300"
+                        >
                             <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Peer Provider</h3>
 
                             <div className="flex items-center gap-3 mb-6">
                                 {skill.provider?.imageUrl ? (
-                                    <img src={skill.provider.imageUrl} alt="Provider" className="w-14 h-14 rounded-xl object-cover" />
+                                    <img src={skill.provider.imageUrl} alt="Provider" className="w-14 h-14 rounded-xl object-cover shadow-sm" />
                                 ) : (
                                     <div className="w-14 h-14 rounded-xl bg-primary-50 flex items-center justify-center text-primary-600 font-black text-xl">
                                         {skill.provider?.firstName?.[0]}
@@ -208,18 +254,18 @@ export default function SkillDetailPage() {
                             </div>
 
                             <div className="grid grid-cols-2 gap-3">
-                                <div className="p-3 bg-gray-50 rounded-xl">
+                                <div className="p-3 bg-gray-50/50 rounded-xl">
                                     <p className="text-[9px] font-bold text-gray-400 uppercase tracking-tight mb-1">Trust Score</p>
                                     <p className="text-sm font-black text-primary-600">{skill.provider?.trustScore || '85'}%</p>
                                 </div>
-                                <div className="p-3 bg-gray-50 rounded-xl">
+                                <div className="p-3 bg-gray-50/50 rounded-xl">
                                     <p className="text-[9px] font-bold text-gray-400 uppercase tracking-tight mb-1">Response</p>
                                     <p className="text-sm font-black text-emerald-500">&lt; 2hr</p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
+                        </motion.div>
+                    </motion.div>
+                </motion.div>
             </div>
 
             {skill && user && (

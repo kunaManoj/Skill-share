@@ -27,6 +27,8 @@ const bookingSchema = new mongoose.Schema({
     providerJoined: { type: Boolean, default: false },
     studentJoined: { type: Boolean, default: false },
     joinedAt: { type: Date },
+    providerOnlineMinutes: { type: Number, default: 0 },
+    studentOnlineMinutes: { type: Number, default: 0 },
 
     createdAt: { type: Date, default: Date.now }
 });
