@@ -12,9 +12,11 @@ router.get('/', async (req, res) => {
 
         if (category) query.category = category;
         if (search) {
+            // Escape special regex characters to treat input literally
+            const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             query.$or = [
-                { title: { $regex: search, $options: 'i' } },
-                { description: { $regex: search, $options: 'i' } }
+                { title: { $regex: escapedSearch, $options: 'i' } },
+                { description: { $regex: escapedSearch, $options: 'i' } }
             ];
         }
 
