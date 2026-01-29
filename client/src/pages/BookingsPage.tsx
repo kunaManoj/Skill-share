@@ -372,64 +372,141 @@ export default function BookingsPage() {
                                                     </Link>
 
                                                     {/* Join Meeting */}
-                                                    <Link to={`/meeting/${booking._id}`}>
-                                                        <motion.div
-                                                            whileHover={{ scale: 1.05 }}
-                                                            whileTap={{ scale: 0.95 }}
-                                                            className="px-3 py-2 bg-blue-600 text-white rounded-lg text-[10px] font-black shadow-lg shadow-blue-500/20 flex items-center gap-1.5 hover:bg-blue-700 transition-colors cursor-pointer"
-                                                        >
-                                                            <Video size={14} />
-                                                            {(role === 'provider' ? booking.providerJoined : booking.studentJoined) ? 'Rejoin' : 'Join'}
-                                                        </motion.div>
-                                                    </Link>
+                                                    {/* Join Meeting - Only show if within time window (start time - 10m to end time + 30m) */}
+                                                    {(() => {
+                                                        const sessionStart = new Date(booking.date).getTime();
+                                                        const durationMs = (booking.duration || 60) * 60000;
+                                                        const sessionEnd = sessionStart + durationMs;
+                                                        const now = new Date().getTime();
+                                                        const isWithinWindow = now >= sessionStart - 600000 && now <= sessionEnd + 1800000; // 10 min early, 30 min late buffer
 
-                                                    {/* Provider: End Session Button */}
-                                                    {role === 'provider' && (() => {
+                                                        if (isWithinWindow && booking.status === 'approved') {
+                                                            return (
+                                                                <Link to={`/meeting/${booking._id}`}>
+                                                                    <motion.div
+                                                                        whileHover={{ scale: 1.05 }}
+                                                                        whileTap={{ scale: 0.95 }}
+                                                                        className="px-3 py-2 bg-blue-600 text-white rounded-lg text-[10px] font-black shadow-lg shadow-blue-500/20 flex items-center gap-1.5 hover:bg-blue-700 transition-colors cursor-pointer"
+                                                                    >
+                                                                        <Video size={14} />
+                                                                        {(role === 'provider' ? booking.providerJoined : booking.studentJoined) ? 'Rejoin' : 'Join'}
+                                                                    </motion.div>
+                                                                </Link>
+                                                            );
+                                                        }
+                                                        return null;
+                                                    })()}
+
+                                                    {/* Provider: End Session / Claim Logic */}
+                                                    {role === 'provider' && booking.status === 'approved' && (() => {
                                                         const duration = booking.duration || 60;
                                                         const providerOnline = booking.providerOnlineMinutes || 0;
-                                                        const requiredTime = duration * 0.9;
-                                                        const canEndSession = providerOnline >= requiredTime;
+                                                        const studentOnline = booking.studentOnlineMinutes || 0;
+
+                                                        const now = new Date().getTime();
+                                                        const sessionStart = new Date(booking.date).getTime();
+                                                        const sessionEnd = sessionStart + duration * 60000;
+
+                                                        const requiredTime = duration * 0.7; // 70% Threshold
+
+                                                        // 1. Success: Provider met 70% requirement
+                                                        const metRequirement = providerOnline >= requiredTime;
+
+                                                        // 2. Student No-Show: 20 mins passed, Student absent (<5m), Provider waited (>15m)
+                                                        const studentNoShow = now > sessionStart + 1200000 && studentOnline < 5 && providerOnline >= 15;
+
+                                                        // 3. Student Left Early: Session over, Provider stayed longer than student
+                                                        const studentLeftEarly = now > sessionEnd && providerOnline > studentOnline + 5; // 5 min buffer
+
+                                                        const canClaim = metRequirement || studentNoShow || studentLeftEarly;
+
+                                                        let statusText = "";
+                                                        if (!canClaim) {
+                                                            if (now < sessionEnd) statusText = `Target: ${Math.ceil(requiredTime)} mins (Tracked: ${providerOnline})`;
+                                                            else statusText = "Attendance requirement not met";
+                                                        }
 
                                                         return (
                                                             <div className="relative group/tooltip">
                                                                 <motion.button
-                                                                    whileHover={canEndSession ? { scale: 1.05 } : {}}
-                                                                    whileTap={canEndSession ? { scale: 0.95 } : {}}
+                                                                    whileHover={canClaim ? { scale: 1.05 } : {}}
+                                                                    whileTap={canClaim ? { scale: 0.95 } : {}}
                                                                     onClick={() => handleEndSession(booking)}
-                                                                    disabled={processingId === booking._id || !canEndSession}
+                                                                    disabled={processingId === booking._id || !canClaim}
                                                                     className={clsx(
                                                                         "px-3 py-2 rounded-lg text-[10px] font-bold flex items-center gap-1.5 transition-colors disabled:opacity-50 shadow-md",
-                                                                        !canEndSession
+                                                                        !canClaim
                                                                             ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200 shadow-none"
                                                                             : "bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700 shadow-emerald-500/20"
                                                                     )}
                                                                 >
-                                                                    {processingId === booking._id ? <Loader2 size={14} className="animate-spin" /> : 'End Session'}
+                                                                    {processingId === booking._id ? <Loader2 size={14} className="animate-spin" /> :
+                                                                        studentNoShow ? 'Claim No-Show' : 'End Session'}
                                                                 </motion.button>
 
-                                                                {!canEndSession && (
-                                                                    <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900/90 backdrop-blur-sm text-white text-[9px] rounded-md whitespace-nowrap opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-10 w-fit">
-                                                                        {`Need ${Math.ceil(requiredTime - providerOnline)} more mins to claim`}
+                                                                {!canClaim && (
+                                                                    <div className="absolute bottom-full mb-2 right-0 px-3 py-2 bg-gray-900/95 backdrop-blur-sm text-white text-[9px] rounded-lg w-max max-w-[200px] opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-20 shadow-xl border border-white/10">
+                                                                        <p className="font-bold mb-1 text-gray-300">Cannot claim yet</p>
+                                                                        <p>{statusText}</p>
                                                                     </div>
                                                                 )}
                                                             </div>
                                                         );
                                                     })()}
-                                                    {/* Student: Claim Refund if Provider No-Show or Left Early */}
-                                                    {role === 'student' &&
-                                                        new Date() > new Date(new Date(booking.date).getTime() + (booking.duration || 60) * 60000) &&
-                                                        (booking.providerOnlineMinutes || 0) < ((booking.duration || 60) * 0.9) && (
-                                                            <motion.button
-                                                                whileHover={{ scale: 1.05 }}
-                                                                whileTap={{ scale: 0.95 }}
-                                                                onClick={() => handleClaimRefund(booking)}
-                                                                disabled={processingId === booking._id}
-                                                                className="px-3 py-2 bg-orange-50 text-orange-600 border border-orange-100 rounded-lg text-[10px] font-bold hover:bg-orange-100 transition-colors flex items-center gap-1 disabled:opacity-50"
-                                                                title="Provider missed session? Claim refund."
-                                                            >
-                                                                {processingId === booking._id ? <Loader2 size={14} className="animate-spin" /> : <><AlertCircle size={14} /> Claim Refund</>}
-                                                            </motion.button>
-                                                        )}
+
+                                                    {/* Student: Claim Refund Logic */}
+                                                    {role === 'student' && booking.status === 'approved' && (() => {
+                                                        const duration = booking.duration || 60;
+                                                        const sessionEnd = new Date(booking.date).getTime() + duration * 60000;
+                                                        const now = new Date().getTime();
+                                                        const isSessionOver = now > sessionEnd;
+
+                                                        const providerOnline = booking.providerOnlineMinutes || 0;
+                                                        const studentOnline = booking.studentOnlineMinutes || 0;
+
+                                                        // Refund Conditions:
+                                                        // 1. Session must be Over
+                                                        // 2. Provider failed 70% requirement
+                                                        // 3. AND Provider did NOT outlast the Student (prevents refund if student left first)
+                                                        // OR Provider is total no-show (<5 mins)
+
+                                                        const providerFailed = providerOnline < (duration * 0.7);
+                                                        const providerLeftEarly = providerOnline < studentOnline;
+                                                        const providerNoShow = providerOnline < 5;
+
+                                                        const canRefund = isSessionOver && (providerNoShow || (providerFailed && providerLeftEarly));
+
+                                                        if (isSessionOver) {
+                                                            if (canRefund) {
+                                                                return (
+                                                                    <motion.button
+                                                                        whileHover={{ scale: 1.05 }}
+                                                                        whileTap={{ scale: 0.95 }}
+                                                                        onClick={() => handleClaimRefund(booking)}
+                                                                        disabled={processingId === booking._id}
+                                                                        className="px-3 py-2 bg-orange-50 text-orange-600 border border-orange-100 rounded-lg text-[10px] font-bold hover:bg-orange-100 transition-colors flex items-center gap-1 disabled:opacity-50"
+                                                                        title="Provider missed session or left early"
+                                                                    >
+                                                                        {processingId === booking._id ? <Loader2 size={14} className="animate-spin" /> : <><AlertCircle size={14} /> Claim Refund</>}
+                                                                    </motion.button>
+                                                                );
+                                                            } else {
+                                                                // If session over but Provider succeded (or student failed worse), allow 'Mark Completed'
+                                                                return (
+                                                                    <motion.button
+                                                                        whileHover={{ scale: 1.05 }}
+                                                                        whileTap={{ scale: 0.95 }}
+                                                                        onClick={() => handleEndSession(booking)}
+                                                                        disabled={processingId === booking._id}
+                                                                        className="px-3 py-2 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-lg text-[10px] font-bold hover:bg-emerald-100 transition-colors flex items-center gap-1 disabled:opacity-50"
+                                                                    >
+                                                                        {processingId === booking._id ? <Loader2 size={14} className="animate-spin" /> : <><CheckCircle size={14} /> Mark Completed</>}
+                                                                    </motion.button>
+                                                                );
+                                                            }
+                                                        }
+                                                        return null;
+                                                    })()}
                                                 </>
                                             )}
 
