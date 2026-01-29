@@ -107,6 +107,16 @@ export const addFunds = async (userId: string, amount: number) => {
     return response.data;
 };
 
+export const savePayoutDetails = async (userId: string, details: any) => {
+    const response = await api.post('/wallet/payout-details', { userId, details });
+    return response.data;
+};
+
+export const requestWithdrawal = async (userId: string, amount: number) => {
+    const response = await api.post('/wallet/withdraw', { userId, amount });
+    return response.data;
+};
+
 export const releaseFunds = async (data: { studentId: string, providerId: string, amount: number, bookingId: string }) => {
     const response = await api.post('/wallet/release-escrow', data);
     return response.data;

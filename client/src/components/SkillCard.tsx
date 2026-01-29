@@ -83,7 +83,7 @@ export default function SkillCard({ skill }: SkillCardProps) {
                     <div className="flex flex-col">
                         <span className="text-[10px] text-gray-500 font-bold uppercase group-hover/btn:text-primary-100 transition-colors">Rate</span>
                         <span className="text-lg font-black text-gray-900 group-hover/btn:text-white transition-colors">
-                            ₹{skill.price}<span className="text-xs font-medium opacity-60 ml-1">/hr</span>
+                            ₹{skill.price}<span className="text-xs font-medium opacity-60 ml-1">/session</span>
                         </span>
                     </div>
                     <div className="w-8 h-8 rounded-lg bg-white text-primary-600 flex items-center justify-center group-hover/btn:bg-white group-hover/btn:text-primary-600 transition-all">

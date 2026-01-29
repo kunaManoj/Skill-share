@@ -142,7 +142,7 @@ export default function SkillDetailPage() {
                     <div className="space-y-6">
                         <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-xl transition-colors duration-300">
                             <div className="mb-6">
-                                <span className="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Rate</span>
+                                <span className="text-gray-500 text-[10px] font-bold uppercase tracking-wider">Price</span>
                                 <div className="flex items-baseline gap-1.5 mt-1">
                                     <span className="text-4xl font-black text-gray-900">₹{skill.price}</span>
                                     <span className="text-gray-400 font-medium text-xs">/ session</span>

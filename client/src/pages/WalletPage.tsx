@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/clerk-react';
-import { getWallet, addFunds } from '../lib/api';
-import { Wallet as WalletIcon, ArrowUpRight, ArrowDownLeft, History, CreditCard, ShieldCheck, Zap } from 'lucide-react';
+import { getWallet, addFunds, savePayoutDetails, requestWithdrawal } from '../lib/api';
+import { Wallet as WalletIcon, ArrowUpRight, ArrowDownLeft, History, CreditCard, ShieldCheck, Zap, Settings, Landmark, Smartphone, X } from 'lucide-react';
 import { format } from 'date-fns';
 import clsx from 'clsx';
 import SEO from '../components/SEO';
+import { toast } from 'sonner';
 
 export default function WalletPage() {
     const { user } = useUser();
@@ -12,6 +13,18 @@ export default function WalletPage() {
     const [transactions, setTransactions] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [addingFunds, setAddingFunds] = useState(false);
+
+    // Withdrawal & Payout State
+    const [showPayoutModal, setShowPayoutModal] = useState(false);
+    const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+    const [withdrawAmount, setWithdrawAmount] = useState('');
+    const [withdrawLoading, setWithdrawLoading] = useState(false);
+
+    // Payout Form State
+    const [payoutType, setPayoutType] = useState<'upi' | 'bank_account'>('upi');
+    const [upiId, setUpiId] = useState('');
+    const [bankDetails, setBankDetails] = useState({ accountNumber: '', ifsc: '', holderName: '' });
+    const [savingPayout, setSavingPayout] = useState(false);
 
     useEffect(() => {
         if (user) fetchWalletData();
@@ -23,6 +36,13 @@ export default function WalletPage() {
             const data = await getWallet(user.id);
             setWallet(data.wallet);
             setTransactions(data.transactions);
+
+            // Pre-fill payout form
+            if (data.wallet.payoutDetails) {
+                setPayoutType(data.wallet.payoutDetails.type);
+                if (data.wallet.payoutDetails.upiId) setUpiId(data.wallet.payoutDetails.upiId);
+                if (data.wallet.payoutDetails.bankAccount) setBankDetails(data.wallet.payoutDetails.bankAccount);
+            }
         } catch (error) {
             console.error('Failed to load wallet:', error);
         } finally {
@@ -36,10 +56,56 @@ export default function WalletPage() {
         try {
             await addFunds(user.id, amount);
             await fetchWalletData();
+            toast.success('Funds added successfully');
         } catch (error) {
             console.error('Failed to add funds', error);
+            toast.error('Failed to add funds');
         } finally {
             setAddingFunds(false);
+        }
+    };
+
+    const handleSavePayoutDetails = async () => {
+        if (!user) return;
+        setSavingPayout(true);
+        try {
+            const details = {
+                type: payoutType,
+                upiId: payoutType === 'upi' ? upiId : undefined,
+                bankAccount: payoutType === 'bank_account' ? bankDetails : undefined
+            };
+            await savePayoutDetails(user.id, details);
+            await fetchWalletData();
+            setShowPayoutModal(false);
+            toast.success('Payout details saved successfully');
+        } catch (error) {
+            console.error('Failed to save payout details', error);
+            toast.error('Failed to save details');
+        } finally {
+            setSavingPayout(false);
+        }
+    };
+
+    const handleWithdraw = async () => {
+        if (!user || !withdrawAmount) return;
+        const amount = parseFloat(withdrawAmount);
+        if (amount <= 0 || amount > (wallet?.balance || 0)) {
+            toast.error('Invalid amount');
+            return;
+        }
+
+        setWithdrawLoading(true);
+        try {
+            await requestWithdrawal(user.id, amount);
+            await fetchWalletData();
+            setShowWithdrawModal(false);
+            setWithdrawAmount('');
+            toast.success('Withdrawal request processed');
+        } catch (error: any) {
+            console.error('Withdrawal failed', error);
+            toast.error(error.response?.data?.error || 'Withdrawal failed');
+        } finally {
+            setWithdrawLoading(false);
         }
     };
 
@@ -50,8 +116,10 @@ export default function WalletPage() {
         </div>
     );
 
+    const hasPayoutDetails = wallet?.payoutDetails?.upiId || wallet?.payoutDetails?.bankAccount?.accountNumber;
+
     return (
-        <div className="min-h-[calc(100vh-64px)] pb-20">
+        <div className="min-h-[calc(100vh-64px)] pb-20 relative">
             <SEO title="My Wallet" description="Manage your UniRent balance and transactions." />
 
             {/* Header section */}
@@ -82,7 +150,7 @@ export default function WalletPage() {
                             <p className="text-primary-100 font-bold uppercase tracking-widest text-[9px] mb-1">Available Balance</p>
                             <h2 className="text-4xl font-black mb-6 leading-tight">₹ {wallet?.balance?.toLocaleString()}</h2>
 
-                            <div className="flex items-center gap-2 text-[10px] font-bold text-white/90 bg-white/10 w-full px-4 py-3 rounded-xl border border-white/10 backdrop-blur-sm">
+                            <div className="flex items-center gap-2 text-[10px] font-bold text-white/90 bg-white/10 w-full px-4 py-3 rounded-xl border border-white/10 backdrop-blur-sm mb-6">
                                 <ShieldCheck size={14} className="text-white" />
                                 <div className="flex flex-col">
                                     <span className="opacity-70 font-medium italic">Pending Clear</span>
@@ -90,33 +158,58 @@ export default function WalletPage() {
                                 </div>
                             </div>
 
-                            <div className="mt-8 pt-6 border-t border-white/10">
-                                <p className="text-[9px] text-primary-100 font-black uppercase tracking-widest mb-3">Add Funds</p>
-                                <div className="grid grid-cols-2 gap-2">
-                                    <button
-                                        onClick={() => handleAddFunds(500)}
-                                        disabled={addingFunds}
-                                        className="bg-white/10 hover:bg-white/20 py-3 rounded-xl text-xs font-black transition-all border border-white/10"
-                                    >
-                                        + ₹500
-                                    </button>
-                                    <button
-                                        onClick={() => handleAddFunds(2000)}
-                                        disabled={addingFunds}
-                                        className="bg-white text-primary-700 hover:bg-gray-50 py-3 rounded-xl text-xs font-black transition-all shadow-lg"
-                                    >
-                                        + ₹2000
-                                    </button>
-                                </div>
+                            <div className="grid grid-cols-2 gap-2">
+                                <button
+                                    onClick={() => setShowWithdrawModal(true)}
+                                    className="bg-white text-primary-700 hover:bg-gray-50 py-3 rounded-xl text-xs font-black transition-all shadow-lg w-full flex items-center justify-center gap-2"
+                                >
+                                    <ArrowUpRight size={14} /> Withdraw
+                                </button>
+                                <button
+                                    onClick={() => handleAddFunds(500)}
+                                    disabled={addingFunds}
+                                    className="bg-white/10 hover:bg-white/20 py-3 rounded-xl text-xs font-black transition-all border border-white/10 w-full"
+                                >
+                                    {addingFunds ? 'Adding...' : '+ Add Funds'}
+                                </button>
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-                            <h3 className="font-black text-black mb-4 uppercase tracking-widest text-[10px]">Security</h3>
-                            <ul className="space-y-3">
-                                <BenefitItem text="Encrypted Ledger" />
-                                <BenefitItem text="Escrow Protection" />
-                            </ul>
+                        {/* Payout Method Card */}
+                        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 relative overflow-hidden">
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="font-black text-black uppercase tracking-widest text-[10px]">Payout Method</h3>
+                                <button
+                                    onClick={() => setShowPayoutModal(true)}
+                                    className="text-primary-600 hover:bg-primary-50 p-1.5 rounded-lg transition-colors"
+                                >
+                                    <Settings size={16} />
+                                </button>
+                            </div>
+
+                            {hasPayoutDetails ? (
+                                <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                    <div className="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center">
+                                        {wallet.payoutDetails.type === 'upi' ? <Smartphone size={20} /> : <Landmark size={20} />}
+                                    </div>
+                                    <div className="overflow-hidden">
+                                        <p className="text-xs font-bold text-black uppercase">{wallet.payoutDetails.type === 'upi' ? 'UPI Linked' : 'Bank Account'}</p>
+                                        <p className="text-[10px] text-gray-500 truncate font-mono">
+                                            {wallet.payoutDetails.type === 'upi' ? wallet.payoutDetails.upiId : `***${wallet.payoutDetails.bankAccount.accountNumber.slice(-4)}`}
+                                        </p>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="text-center py-6 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                                    <p className="text-xs font-bold text-gray-400 mb-2">No payout method linked</p>
+                                    <button
+                                        onClick={() => setShowPayoutModal(true)}
+                                        className="text-[10px] font-black text-primary-600 hover:underline uppercase tracking-wide"
+                                    >
+                                        + Link Method
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -130,7 +223,7 @@ export default function WalletPage() {
                                 </h3>
                             </div>
 
-                            <div className="divide-y divide-gray-50">
+                            <div className="divide-y divide-gray-50 max-h-[600px] overflow-y-auto">
                                 {transactions.length === 0 ? (
                                     <div className="p-12 text-center">
                                         <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px]">No activity</p>
@@ -140,7 +233,7 @@ export default function WalletPage() {
                                         <div key={tx._id} className="p-5 hover:bg-gray-50 transition-colors flex items-center justify-between group">
                                             <div className="flex items-center gap-4">
                                                 <div className={clsx("w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105",
-                                                    tx.type === 'CREDIT' ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-50 text-gray-500'
+                                                    tx.type === 'CREDIT' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'
                                                 )}>
                                                     {tx.type === 'CREDIT' ? <ArrowDownLeft size={20} /> : <ArrowUpRight size={20} />}
                                                 </div>
@@ -151,10 +244,11 @@ export default function WalletPage() {
                                             </div>
                                             <div className="text-right">
                                                 <p className={clsx("text-base font-black",
-                                                    tx.type === 'CREDIT' ? 'text-emerald-600' : 'text-black'
+                                                    tx.type === 'CREDIT' ? 'text-emerald-600' : 'text-rose-600'
                                                 )}>
                                                     {tx.type === 'CREDIT' ? '+' : '-'} ₹{tx.amount}
                                                 </p>
+                                                <p className="text-[9px] font-bold text-gray-300 uppercase">{tx.category}</p>
                                             </div>
                                         </div>
                                     ))
@@ -165,17 +259,138 @@ export default function WalletPage() {
                 </div>
             </div>
 
+            {/* Withdraw Modal */}
+            {showWithdrawModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-lg font-black text-black">Withdraw Funds</h3>
+                            <button onClick={() => setShowWithdrawModal(false)} className="text-gray-400 hover:text-black">
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1 block">Amount (₹)</label>
+                                <input
+                                    type="number"
+                                    value={withdrawAmount}
+                                    onChange={(e) => setWithdrawAmount(e.target.value)}
+                                    className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 font-bold text-lg"
+                                    placeholder="0"
+                                    autoFocus
+                                />
+                                <p className="text-[10px] text-gray-400 mt-2 font-medium">Available to withdraw: ₹{wallet?.balance}</p>
+                            </div>
+
+                            {!hasPayoutDetails && (
+                                <div className="p-3 bg-amber-50 rounded-lg border border-amber-100 text-amber-600 text-xs font-bold flex gap-2">
+                                    <ShieldCheck size={16} />
+                                    Please link a payout method first.
+                                </div>
+                            )}
+
+                            <button
+                                onClick={handleWithdraw}
+                                disabled={withdrawLoading || !withdrawAmount || !hasPayoutDetails}
+                                className="w-full bg-black text-white py-3 rounded-xl font-bold disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-900 transition-colors"
+                            >
+                                {withdrawLoading ? 'Processing...' : 'Confirm Withdrawal'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Payout Settings Modal */}
+            {showPayoutModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-lg font-black text-black">Payout Details</h3>
+                            <button onClick={() => setShowPayoutModal(false)} className="text-gray-400 hover:text-black">
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="flex p-1 bg-gray-50 rounded-lg mb-6">
+                            <button
+                                className={clsx("flex-1 py-2 rounded-md text-xs font-bold transition-all", payoutType === 'upi' ? "bg-white shadow-sm text-black" : "text-gray-400")}
+                                onClick={() => setPayoutType('upi')}
+                            >
+                                UPI ID
+                            </button>
+                            <button
+                                className={clsx("flex-1 py-2 rounded-md text-xs font-bold transition-all", payoutType === 'bank_account' ? "bg-white shadow-sm text-black" : "text-gray-400")}
+                                onClick={() => setPayoutType('bank_account')}
+                            >
+                                Bank Transfer
+                            </button>
+                        </div>
+
+                        <div className="space-y-4">
+                            {payoutType === 'upi' ? (
+                                <div>
+                                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1 block">UPI ID / VPA</label>
+                                    <input
+                                        type="text"
+                                        value={upiId}
+                                        onChange={(e) => setUpiId(e.target.value)}
+                                        className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium"
+                                        placeholder="username@bank"
+                                    />
+                                </div>
+                            ) : (
+                                <>
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1 block">Account Number</label>
+                                        <input
+                                            type="text"
+                                            value={bankDetails.accountNumber}
+                                            onChange={(e) => setBankDetails({ ...bankDetails, accountNumber: e.target.value })}
+                                            className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium"
+                                            placeholder="000000000000"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1 block">IFSC Code</label>
+                                            <input
+                                                type="text"
+                                                value={bankDetails.ifsc}
+                                                onChange={(e) => setBankDetails({ ...bankDetails, ifsc: e.target.value })}
+                                                className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium"
+                                                placeholder="ABCD0001234"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1 block">Holder Name</label>
+                                            <input
+                                                type="text"
+                                                value={bankDetails.holderName}
+                                                onChange={(e) => setBankDetails({ ...bankDetails, holderName: e.target.value })}
+                                                className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 font-medium"
+                                                placeholder="John Doe"
+                                            />
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            <button
+                                onClick={handleSavePayoutDetails}
+                                disabled={savingPayout}
+                                className="w-full bg-black text-white py-3 rounded-xl font-bold hover:bg-gray-900 transition-colors mt-4"
+                            >
+                                {savingPayout ? 'Saving...' : 'Save Details'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
 
-function BenefitItem({ text }: { text: string }) {
-    return (
-        <li className="flex items-center gap-3 group">
-            <div className="w-8 h-8 rounded-xl bg-primary-50 flex items-center justify-center text-primary-600 group-hover:scale-110 transition-transform">
-                <ShieldCheck size={16} />
-            </div>
-            <span className="text-sm font-bold text-gray-600">{text}</span>
-        </li>
-    );
-}
+
