@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUser } from '@clerk/clerk-react';
-import { getAdminStats, getAdminUsers, toggleUserBan, getAdminSkills, deleteAdminSkill, getAdminBookings } from '../lib/api';
+import { getAdminStats, getAdminUsers, toggleUserBan, getAdminSkills, deleteAdminSkill, getAdminBookings, syncUser } from '../lib/api';
 import { Users, Book, Activity, AlertCircle, Ban, Trash2, CheckCircle } from 'lucide-react';
 import clsx from 'clsx';
 import { format } from 'date-fns';
@@ -88,11 +88,8 @@ export default function AdminDashboardPage() {
                     onClick={async () => {
                         if (!user) return;
                         try {
-                            // Call the special dev route
-                            const { devMakeAdmin, devSyncUser } = await import('../lib/api');
-
-                            // 1. Force Sync User (this creates the specific user in DB if missing)
-                            await devSyncUser({
+                            // Force Sync User (this creates/updates the specific user in DB)
+                            await syncUser({
                                 clerkId: user.id,
                                 email: user.primaryEmailAddress?.emailAddress,
                                 firstName: user.firstName,
@@ -100,10 +97,7 @@ export default function AdminDashboardPage() {
                                 imageUrl: user.imageUrl
                             });
 
-                            // 2. Then Promote
-                            await devMakeAdmin(user.id);
-
-                            alert("Privileges updated! Please refresh the page.");
+                            alert("Sync complete! If you have admin privileges, please refresh.");
                             window.location.reload();
                         } catch (e) {
                             alert("Failed to auto-fix. Please check console.");
