@@ -1,3 +1,5 @@
+import { motion } from 'framer-motion';
+
 const AboutSection = () => {
     const features = [
         {
@@ -47,25 +49,48 @@ const AboutSection = () => {
             <div className="max-w-6xl mx-auto relative z-10">
                 {/* Section Header */}
                 <div className="text-center mb-16">
-                    <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/60 backdrop-blur-md border border-white/40 text-primary-700 text-xs font-bold tracking-widest uppercase mb-4 shadow-lg shadow-primary-500/10">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5 }}
+                        className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/60 backdrop-blur-md border border-white/40 text-primary-700 text-xs font-bold tracking-widest uppercase mb-4 shadow-lg shadow-primary-500/10"
+                    >
                         About Us
-                    </div>
-                    <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 leading-tight">
+                    </motion.div>
+                    <motion.h2
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="text-4xl md:text-5xl font-black text-gray-900 mb-6 leading-tight"
+                    >
                         Revolutionizing Learning Through
                         <span className="text-primary-600"> Peer Connection</span>
-                    </h2>
-                    <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    </motion.h2>
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: 0.4 }}
+                        className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
+                    >
                         We believe the best learning happens when students teach students. Our platform connects
                         learners with peer mentors who've walked the same path, creating a supportive environment
                         where knowledge flows naturally.
-                    </p>
+                    </motion.p>
                 </div>
 
                 {/* Features Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
                     {features.map((feature, index) => (
-                        <div
+                        <motion.div
                             key={index}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5, delay: index * 0.1 }}
+                            whileHover={{ y: -5, scale: 1.02 }}
                             className="group relative p-8 rounded-2xl bg-white/50 backdrop-blur-xl border border-white/40 hover:border-primary-300/50 shadow-lg shadow-gray-200/30 hover:shadow-xl hover:shadow-primary-500/10 transition-all duration-300"
                         >
                             <div className="flex items-start gap-5">
@@ -77,22 +102,31 @@ const AboutSection = () => {
                                     <p className="text-gray-600 leading-relaxed">{feature.description}</p>
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
 
                 {/* Secure Payments Section */}
-                <div className="relative p-10 rounded-3xl bg-gradient-to-r from-primary-600/90 via-primary-700/90 to-primary-800/90 backdrop-blur-xl text-white overflow-hidden border border-white/10 shadow-2xl">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="relative p-10 rounded-3xl bg-gradient-to-r from-primary-600/90 via-primary-700/90 to-primary-800/90 backdrop-blur-xl text-white overflow-hidden border border-white/10 shadow-2xl"
+                >
                     {/* Decorative elements */}
                     <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
                     <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2"></div>
 
                     <div className="relative z-10 flex flex-col items-center text-center max-w-4xl mx-auto space-y-6">
-                        <div className="p-3 bg-white/10 rounded-2xl mb-2 backdrop-blur-sm border border-white/10">
+                        <motion.div
+                            whileHover={{ rotate: 10, scale: 1.1 }}
+                            className="p-3 bg-white/10 rounded-2xl mb-2 backdrop-blur-sm border border-white/10"
+                        >
                             <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                             </svg>
-                        </div>
+                        </motion.div>
 
                         <h3 className="text-2xl md:text-4xl font-black mb-2">
                             Secure Payments with Escrow Protection
@@ -103,39 +137,44 @@ const AboutSection = () => {
                         </p>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 w-full text-left">
-                            <div className="bg-white/10 p-5 rounded-xl border border-white/10 backdrop-blur-sm">
-                                <h4 className="font-bold text-lg mb-2 flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                                    Funds Held Safely
-                                </h4>
-                                <p className="text-sm text-primary-100">Payment is released to the provider only after the session is done.</p>
-                            </div>
-                            <div className="bg-white/10 p-5 rounded-xl border border-white/10 backdrop-blur-sm">
-                                <h4 className="font-bold text-lg mb-2 flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-full bg-amber-400"></span>
-                                    No-Show Protection
-                                </h4>
-                                <p className="text-sm text-primary-100">Full refund guaranteed if the provider doesn't show up for the session.</p>
-                            </div>
-                            <div className="bg-white/10 p-5 rounded-xl border border-white/10 backdrop-blur-sm">
-                                <h4 className="font-bold text-lg mb-2 flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-full bg-blue-400"></span>
-                                    Verified Sessions
-                                </h4>
-                                <p className="text-sm text-primary-100">Both parties confirm completion before funds are transferred.</p>
-                            </div>
+                            {[
+                                { color: 'bg-emerald-400', title: 'Funds Held Safely', desc: 'Payment is released to the provider only after the session is done.' },
+                                { color: 'bg-amber-400', title: 'No-Show Protection', desc: 'Full refund guaranteed if the provider doesn\'t show up for the session.' },
+                                { color: 'bg-blue-400', title: 'Verified Sessions', desc: 'Both parties confirm completion before funds are transferred.' }
+                            ].map((item, idx) => (
+                                <motion.div
+                                    key={idx}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: 0.2 + (idx * 0.1) }}
+                                    className="bg-white/10 p-5 rounded-xl border border-white/10 backdrop-blur-sm hover:bg-white/15 transition-colors"
+                                >
+                                    <h4 className="font-bold text-lg mb-2 flex items-center gap-2">
+                                        <span className={`w-2 h-2 rounded-full ${item.color}`}></span>
+                                        {item.title}
+                                    </h4>
+                                    <p className="text-sm text-primary-100">{item.desc}</p>
+                                </motion.div>
+                            ))}
                         </div>
                     </div>
-                </div>
+                </motion.div>
 
                 {/* Message Section */}
-                <div className="mt-16 text-center p-8 rounded-2xl bg-white/40 backdrop-blur-lg border border-white/50 shadow-lg">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.4 }}
+                    className="mt-16 text-center p-8 rounded-2xl bg-white/40 backdrop-blur-lg border border-white/50 shadow-lg"
+                >
                     <p className="text-xl text-gray-600 italic max-w-3xl mx-auto leading-relaxed">
                         "Peer-to-peer learning isn't just about sharing knowledge—it's about building a community
                         where every student has the potential to be both a learner and a teacher."
                     </p>
                     <p className="mt-4 text-primary-600 font-semibold">— The SkillShare Team</p>
-                </div>
+                </motion.div>
             </div>
         </section>
     );

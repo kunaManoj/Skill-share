@@ -190,10 +190,9 @@ export default function BookingsPage() {
             {/* Header section with role switcher */}
             <div className="bg-white/60 backdrop-blur-xl border-b border-white/30 mb-6 transition-all duration-300 sticky top-0 z-20">
                 <div className="w-full px-6 xl:px-12 py-6 md:py-8">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                        <div className="space-y-1">
+                    <div className="flex flex-row items-center justify-between gap-4">
+                        <div>
                             <h1 className="text-2xl font-black text-gray-900 tracking-tight">Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-indigo-600">Bookings</span></h1>
-                            <p className="text-[10px] text-gray-500 font-bold tracking-widest uppercase">Learning & Teaching</p>
                         </div>
 
                         <div className="bg-gray-100/50 p-1.5 rounded-xl flex items-center border border-gray-200/50 relative">

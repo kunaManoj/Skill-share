@@ -14,6 +14,7 @@ import ChatPage from '../pages/ChatPage';
 import MeetingPage from '../pages/MeetingPage';
 import AdminDashboardPage from '../pages/AdminDashboardPage';
 import NotificationsPage from '../pages/NotificationsPage';
+import ComplaintPage from '../pages/ComplaintPage';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
@@ -126,6 +127,9 @@ const AnimatedRoutes = () => {
                 } />
                 <Route path="/notifications" element={
                     <SignedIn><PageWrapper><NotificationsPage /></PageWrapper></SignedIn>
+                } />
+                <Route path="/complaint" element={
+                    <SignedIn><PageWrapper><ComplaintPage /></PageWrapper></SignedIn>
                 } />
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>

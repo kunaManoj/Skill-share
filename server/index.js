@@ -31,6 +31,7 @@ app.use('/api/payment', require('./routes/payment'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/reviews', require('./routes/reviews'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/complaints', require('./routes/complaints'));
 
 
 // Health Check

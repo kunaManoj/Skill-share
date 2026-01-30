@@ -183,4 +183,26 @@ export const deleteSkill = async (skillId: string, userId: string) => {
     return response.data;
 };
 
+
+// Complaint APIs
+export const createComplaint = async (data: { userId: string, userEmail?: string, userName?: string, title: string, description: string }) => {
+    const response = await api.post('/complaints', data);
+    return response.data;
+};
+
+export const getComplaints = async () => {
+    const response = await api.get('/complaints');
+    return response.data;
+};
+
+export const resolveComplaint = async (id: string) => {
+    const response = await api.patch(`/complaints/${id}/resolve`);
+    return response.data;
+};
+
+export const getUserComplaints = async (userId: string) => {
+    const response = await api.get(`/complaints/user/${userId}`);
+    return response.data;
+};
+
 export default api;

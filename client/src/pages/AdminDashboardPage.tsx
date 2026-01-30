@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUser } from '@clerk/clerk-react';
-import { getAdminStats, getAdminUsers, toggleUserBan, getAdminSkills, deleteAdminSkill, getAdminBookings, syncUser } from '../lib/api';
+import { getAdminStats, getAdminUsers, toggleUserBan, getAdminSkills, deleteAdminSkill, getAdminBookings, syncUser, getComplaints, resolveComplaint } from '../lib/api';
 import { Users, Book, Activity, AlertCircle, Ban, Trash2, CheckCircle } from 'lucide-react';
 import clsx from 'clsx';
 import { format } from 'date-fns';
@@ -10,11 +10,12 @@ import SEO from '../components/SEO';
 
 export default function AdminDashboardPage() {
     const { user } = useUser();
-    const [tab, setTab] = useState<'stats' | 'users' | 'skills' | 'bookings'>('stats');
+    const [tab, setTab] = useState<'stats' | 'users' | 'skills' | 'bookings' | 'complaints'>('stats');
     const [stats, setStats] = useState<any>(null);
     const [usersList, setUsersList] = useState<any[]>([]);
     const [skillsList, setSkillsList] = useState<any[]>([]);
     const [bookingsList, setBookingsList] = useState<any[]>([]);
+    const [complaintsList, setComplaintsList] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -40,6 +41,9 @@ export default function AdminDashboardPage() {
             } else if (tab === 'bookings') {
                 const data = await getAdminBookings(user!.id);
                 setBookingsList(data);
+            } else if (tab === 'complaints') {
+                const data = await getComplaints();
+                setComplaintsList(data);
             }
         } catch (err: any) {
             // If 403, not admin
@@ -72,6 +76,16 @@ export default function AdminDashboardPage() {
             toast.success('Skill deleted successfully');
         } catch (err) {
             toast.error('Delete failed');
+        }
+    };
+
+    const handleResolveComplaint = async (id: string) => {
+        try {
+            await resolveComplaint(id);
+            toast.success('Complaint resolved');
+            fetchData();
+        } catch (err) {
+            toast.error('Failed to resolve');
         }
     };
 
@@ -129,7 +143,7 @@ export default function AdminDashboardPage() {
 
             {/* Tabs */}
             <div className="flex gap-4 border-b border-gray-200/60 mb-8 overflow-x-auto pb-1">
-                {['stats', 'users', 'skills', 'bookings'].map((t) => (
+                {['stats', 'users', 'skills', 'bookings', 'complaints'].map((t) => (
                     <button
                         key={t}
                         onClick={() => setTab(t as any)}
@@ -295,15 +309,15 @@ export default function AdminDashboardPage() {
                         )}
 
                         {tab === 'bookings' && (
-                            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg shadow-gray-100/50 border border-white/60 overflow-hidden">
-                                <table className="w-full text-left">
+                            <div className="max-w-6xl mx-auto bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg shadow-gray-100/50 border border-white/60 overflow-hidden">
+                                <table className="w-full text-center">
                                     <thead className="bg-gray-50/50 text-gray-400 text-[10px] uppercase font-bold tracking-wider border-b border-gray-100">
                                         <tr>
-                                            <th className="px-6 py-4">Date</th>
-                                            <th className="px-6 py-4">Skill</th>
-                                            <th className="px-6 py-4">Student</th>
-                                            <th className="px-6 py-4">Provider</th>
-                                            <th className="px-6 py-4">Status</th>
+                                            <th className="px-6 py-4 text-center">Date</th>
+                                            <th className="px-6 py-4 text-center">Skill</th>
+                                            <th className="px-6 py-4 text-center">Student</th>
+                                            <th className="px-6 py-4 text-center">Provider</th>
+                                            <th className="px-6 py-4 text-center">Status</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-100/50">
@@ -328,6 +342,50 @@ export default function AdminDashboardPage() {
                                         ))}
                                     </tbody>
                                 </table>
+                            </div>
+                        )}
+
+                        {tab === 'complaints' && (
+                            <div className="grid grid-cols-1 gap-4">
+                                {complaintsList.map((c) => (
+                                    <motion.div
+                                        key={c._id}
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-white/60 shadow-sm"
+                                    >
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <span className={clsx("px-2 py-0.5 rounded text-[10px] font-bold uppercase",
+                                                        c.status === 'resolved' ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                                                    )}>
+                                                        {c.status}
+                                                    </span>
+                                                    <span className="text-xs text-gray-400 font-medium">
+                                                        {format(new Date(c.createdAt), 'MMM d, yyyy HH:mm')}
+                                                    </span>
+                                                </div>
+                                                <h3 className="text-lg font-bold text-gray-900">{c.title}</h3>
+                                                <p className="text-sm text-gray-600 mt-2">{c.description}</p>
+                                                <div className="mt-4 text-xs text-gray-400 font-mono">
+                                                    Reported by: {c.userName || c.userEmail} ({c.userId})
+                                                </div>
+                                            </div>
+                                            {c.status !== 'resolved' && (
+                                                <button
+                                                    onClick={() => handleResolveComplaint(c._id)}
+                                                    className="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-black transition-colors"
+                                                >
+                                                    Mark Resolved
+                                                </button>
+                                            )}
+                                        </div>
+                                    </motion.div>
+                                ))}
+                                {complaintsList.length === 0 && (
+                                    <div className="text-center py-12 text-gray-400">No complaints found.</div>
+                                )}
                             </div>
                         )}
                     </motion.div>

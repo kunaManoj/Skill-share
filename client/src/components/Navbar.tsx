@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { SignedIn, SignedOut, UserButton, useUser } from '@clerk/clerk-react';
-import { Menu, X, BookOpen, Wallet, GraduationCap, Shield, Bell, Zap } from 'lucide-react';
+import { Menu, X, BookOpen, Wallet, GraduationCap, Shield, Bell, Zap, AlertTriangle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { syncUser } from '../lib/api';
 import clsx from 'clsx';
@@ -101,6 +101,7 @@ export default function Navbar() {
                             <IconLink to="/bookings" icon={<BookOpen size={18} />} label="Bookings" active={isActive('/bookings')} />
                             <IconLink to="/notifications" icon={<Bell size={18} />} label="Alerts" active={isActive('/notifications')} />
                             <IconLink to="/wallet" icon={<Wallet size={18} />} label="Wallet" active={isActive('/wallet')} />
+                            <IconLink to="/complaint" icon={<AlertTriangle size={18} className="text-red-500" />} label="Report" active={isActive('/complaint')} />
 
                         </SignedIn>
                     </div>
