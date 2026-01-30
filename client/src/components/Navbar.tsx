@@ -68,8 +68,11 @@ export default function Navbar() {
             initial={{ y: -100 }}
             animate={{ y: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-2xl border-b border-white/40 shadow-sm shadow-indigo-100/20 supports-[backdrop-filter]:bg-white/60 rounded-b-3xl transition-all duration-300"
+            className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-3xl border-b border-white/40 shadow-[0_15px_30px_-10px_rgba(79,70,229,0.2)] supports-[backdrop-filter]:bg-white/60 rounded-b-3xl transition-all duration-300"
         >
+            {/* 3D Gradient Border/Glow */}
+            <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+
             <div className="w-full px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16 items-center">
                     {/* Logo Area */}
