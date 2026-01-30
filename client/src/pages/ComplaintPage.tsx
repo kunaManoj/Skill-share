@@ -3,7 +3,7 @@ import { useUser } from '@clerk/clerk-react';
 import { createComplaint, getUserComplaints } from '../lib/api';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, Send, History, CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { Send, History, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import SEO from '../components/SEO';
 import clsx from 'clsx';
 import { format } from 'date-fns';
