@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Star, X } from 'lucide-react';
 import { createReview } from '../lib/api';
 import clsx from 'clsx';
-import { useNavigate } from 'react-router-dom';
+
 
 interface ReviewModalProps {
     isOpen: boolean;
@@ -14,7 +14,7 @@ export default function ReviewModal({ isOpen, onClose, bookingId }: ReviewModalP
     const [rating, setRating] = useState(5);
     const [comment, setComment] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const navigate = useNavigate();
+
 
     if (!isOpen) return null;
 
