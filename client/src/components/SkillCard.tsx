@@ -113,8 +113,8 @@ export default function SkillCard({ skill, isOwner }: SkillCardProps) {
                         }
                     }}
                     className={`flex items-center justify-between w-full p-3 rounded-xl border transition-all duration-300 group/btn ${isOwner
-                            ? 'bg-rose-50 border-rose-200 hover:bg-rose-100 cursor-default'
-                            : 'bg-white/50 backdrop-blur-sm hover:bg-primary-600 border-white/60 hover:border-primary-600'
+                        ? 'bg-rose-50 border-rose-200 hover:bg-rose-100 cursor-default'
+                        : 'bg-white/50 backdrop-blur-sm hover:bg-primary-600 border-white/60 hover:border-primary-600'
                         }`}
                 >
                     {isOwner ? (

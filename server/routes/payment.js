@@ -199,8 +199,8 @@ router.post('/release-escrow', async (req, res) => {
         await Notification.create({
             userId: booking.studentId,
             type: 'system',
-            title: 'Session Completed',
-            message: `Your session for "${booking.skillId.title}" is complete. Thank you!`,
+            title: 'Payment Released',
+            message: `Your payment for "${booking.skillId.title}" has been released to the provider. Session completed.`,
             link: '/bookings'
         });
 
@@ -270,6 +270,8 @@ router.post('/refund-escrow', async (req, res) => {
             link: '/wallet'
         });
 
+
+
         res.json({
             success: true,
             message: 'Escrow refunded to student',
@@ -295,8 +297,12 @@ router.post('/claim-no-show-refund', async (req, res) => {
             return res.status(400).json({ error: 'Booking not eligible for refund' });
         }
 
-        if (booking.providerJoined) {
-            return res.status(400).json({ error: 'Provider joined the session. Cannot claim no-show refund.' });
+        const duration = booking.duration || 60;
+        const requiredTime = duration * 0.7;
+        const providerOnline = booking.providerOnlineMinutes || 0;
+
+        if (providerOnline >= requiredTime) {
+            return res.status(400).json({ error: 'Provider met attendance requirements. Cannot claim refund.' });
         }
 
         const now = new Date();
@@ -339,13 +345,15 @@ router.post('/claim-no-show-refund', async (req, res) => {
             relatedBookingId: booking._id
         });
 
-        // 5. Notify
+
+
+        // 6. Notify Student
         await Notification.create({
-            userId: booking.providerId,
-            type: 'system',
-            title: 'Refund Claimed',
-            message: `Student claimed refund for no-show on "${booking.skillId.title}".`,
-            link: '/bookings'
+            userId: booking.studentId,
+            type: 'payment',
+            title: 'Refund Processed',
+            message: `Refund of ₹${escrow.amount} for "${booking.skillId.title}" has been added to your wallet.`,
+            link: '/wallet'
         });
 
         res.json({ success: true, message: 'Refund processed successfully' });

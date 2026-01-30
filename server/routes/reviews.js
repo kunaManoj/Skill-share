@@ -12,7 +12,10 @@ router.post('/', async (req, res) => {
         // Verify booking exists and is completed
         const booking = await Booking.findById(bookingId);
         if (!booking) return res.status(404).json({ error: 'Booking not found' });
-        if (booking.status !== 'completed') return res.status(400).json({ error: 'Booking must be completed to leave a review' });
+        if (booking.status !== 'completed') {
+            // If booking is not completed, update its status to completed
+            await Booking.findByIdAndUpdate(bookingId, { status: 'completed' });
+        }
 
         // Check if review already exists
         const existingReview = await Review.findOne({ bookingId });

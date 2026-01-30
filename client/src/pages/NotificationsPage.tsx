@@ -4,6 +4,7 @@ import { useUser } from '@clerk/clerk-react';
 import { api } from '../lib/api';
 import { Loader2, Bell, CheckCircle, Clock, CreditCard, Calendar, BellOff } from 'lucide-react';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
 import clsx from 'clsx';
 import { useNavigate } from 'react-router-dom';
 
@@ -40,7 +41,14 @@ export default function NotificationsPage() {
 
     const handleNotificationClick = (notif: any) => {
         if (!notif.isRead) markAsRead(notif._id);
-        if (notif.link) navigate(notif.link);
+
+        if (notif.type === 'payment') {
+            navigate('/wallet');
+        } else if (notif.type === 'booking') {
+            navigate('/bookings');
+        } else if (notif.link) {
+            navigate(notif.link);
+        }
     };
 
     const getIcon = (type: string) => {
@@ -57,16 +65,32 @@ export default function NotificationsPage() {
         <div className="min-h-[calc(100vh-64px)] pb-20">
             {/* Header */}
             <div className="bg-white border-b border-gray-100 mb-6">
-                <div className="w-full px-6 xl:px-12 py-8">
-                    <h1 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
-                        Notifications
-                        {unreadCount > 0 && (
-                            <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">
-                                {unreadCount} New
-                            </span>
-                        )}
-                    </h1>
-                    <p className="text-[10px] text-gray-500 font-bold tracking-widest uppercase mt-1">Updates & Alerts</p>
+                <div className="w-full px-6 xl:px-12 py-8 flex items-center justify-between">
+                    <div>
+                        <h1 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
+                            Notifications
+                            {unreadCount > 0 && (
+                                <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">
+                                    {unreadCount} New
+                                </span>
+                            )}
+                        </h1>
+                        <p className="text-[10px] text-gray-500 font-bold tracking-widest uppercase mt-1">Updates & Alerts</p>
+                    </div>
+
+                    {unreadCount > 0 && (
+                        <button
+                            onClick={() => {
+                                notifications.forEach(n => {
+                                    if (!n.isRead) markAsRead(n._id);
+                                });
+                                toast.success('All notifications marked as read');
+                            }}
+                            className="text-xs font-bold text-primary-600 hover:text-primary-700 hover:bg-primary-50 px-3 py-2 rounded-lg transition-colors border border-transparent hover:border-primary-100"
+                        >
+                            Mark all as read
+                        </button>
+                    )}
                 </div>
             </div>
 

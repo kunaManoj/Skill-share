@@ -105,7 +105,7 @@ export default function BookingsPage() {
 
         setProcessingId(booking._id);
         try {
-            await updateBookingStatus(booking._id, 'cancelled');
+            await updateBookingStatus(booking._id, 'cancelled', { cancelledBy: user?.id });
 
             // Refund if paid
             if (booking.paymentStatus === 'paid') {
@@ -372,15 +372,16 @@ export default function BookingsPage() {
                                                     </Link>
 
                                                     {/* Join Meeting */}
-                                                    {/* Join Meeting - Only show if within time window (start time - 10m to end time + 30m) */}
+                                                    {/* Join Meeting - Available until strictly session end time */}
                                                     {(() => {
                                                         const sessionStart = new Date(booking.date).getTime();
                                                         const durationMs = (booking.duration || 60) * 60000;
                                                         const sessionEnd = sessionStart + durationMs;
                                                         const now = new Date().getTime();
-                                                        const isWithinWindow = now >= sessionStart - 600000 && now <= sessionEnd + 1800000; // 10 min early, 30 min late buffer
+                                                        // Allow join 10 mins before, but strictly cut off at session end
+                                                        const isAvailable = now >= sessionStart - 600000 && now <= sessionEnd;
 
-                                                        if (isWithinWindow && booking.status === 'approved') {
+                                                        if (isAvailable && booking.status === 'approved') {
                                                             return (
                                                                 <Link to={`/meeting/${booking._id}`}>
                                                                     <motion.div
@@ -397,87 +398,49 @@ export default function BookingsPage() {
                                                         return null;
                                                     })()}
 
-                                                    {/* Provider: End Session / Claim Logic */}
-                                                    {role === 'provider' && booking.status === 'approved' && (() => {
-                                                        const duration = booking.duration || 60;
-                                                        const providerOnline = booking.providerOnlineMinutes || 0;
-                                                        const studentOnline = booking.studentOnlineMinutes || 0;
-
-                                                        const now = new Date().getTime();
-                                                        const sessionStart = new Date(booking.date).getTime();
-                                                        const sessionEnd = sessionStart + duration * 60000;
-
-                                                        const requiredTime = duration * 0.7; // 70% Threshold
-
-                                                        // 1. Success: Provider met 70% requirement
-                                                        const metRequirement = providerOnline >= requiredTime;
-
-                                                        // 2. Student No-Show: 20 mins passed, Student absent (<5m), Provider waited (>15m)
-                                                        const studentNoShow = now > sessionStart + 1200000 && studentOnline < 5 && providerOnline >= 15;
-
-                                                        // 3. Student Left Early: Session over, Provider stayed longer than student
-                                                        const studentLeftEarly = now > sessionEnd && providerOnline > studentOnline + 5; // 5 min buffer
-
-                                                        const canClaim = metRequirement || studentNoShow || studentLeftEarly;
-
-                                                        let statusText = "";
-                                                        if (!canClaim) {
-                                                            if (now < sessionEnd) statusText = `Target: ${Math.ceil(requiredTime)} mins (Tracked: ${providerOnline})`;
-                                                            else statusText = "Attendance requirement not met";
-                                                        }
-
-                                                        return (
-                                                            <div className="relative group/tooltip">
-                                                                <motion.button
-                                                                    whileHover={canClaim ? { scale: 1.05 } : {}}
-                                                                    whileTap={canClaim ? { scale: 0.95 } : {}}
-                                                                    onClick={() => handleEndSession(booking)}
-                                                                    disabled={processingId === booking._id || !canClaim}
-                                                                    className={clsx(
-                                                                        "px-3 py-2 rounded-lg text-[10px] font-bold flex items-center gap-1.5 transition-colors disabled:opacity-50 shadow-md",
-                                                                        !canClaim
-                                                                            ? "bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200 shadow-none"
-                                                                            : "bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700 shadow-emerald-500/20"
-                                                                    )}
-                                                                >
-                                                                    {processingId === booking._id ? <Loader2 size={14} className="animate-spin" /> :
-                                                                        studentNoShow ? 'Claim No-Show' : 'End Session'}
-                                                                </motion.button>
-
-                                                                {!canClaim && (
-                                                                    <div className="absolute bottom-full mb-2 right-0 px-3 py-2 bg-gray-900/95 backdrop-blur-sm text-white text-[9px] rounded-lg w-max max-w-[200px] opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-20 shadow-xl border border-white/10">
-                                                                        <p className="font-bold mb-1 text-gray-300">Cannot claim yet</p>
-                                                                        <p>{statusText}</p>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        );
-                                                    })()}
-
-                                                    {/* Student: Claim Refund Logic */}
-                                                    {role === 'student' && booking.status === 'approved' && (() => {
+                                                    {/* Settlement Actions - Only available AFTER session end */}
+                                                    {(() => {
                                                         const duration = booking.duration || 60;
                                                         const sessionEnd = new Date(booking.date).getTime() + duration * 60000;
                                                         const now = new Date().getTime();
-                                                        const isSessionOver = now > sessionEnd;
+
+                                                        // STRICT: No claims before session end
+                                                        if (now <= sessionEnd) return null;
 
                                                         const providerOnline = booking.providerOnlineMinutes || 0;
-                                                        const studentOnline = booking.studentOnlineMinutes || 0;
+                                                        // const studentOnline = booking.studentOnlineMinutes || 0;
+                                                        const requiredTime = duration * 0.7; // 70% Threshold
 
-                                                        // Refund Conditions:
-                                                        // 1. Session must be Over
-                                                        // 2. Provider failed 70% requirement
-                                                        // 3. AND Provider did NOT outlast the Student (prevents refund if student left first)
-                                                        // OR Provider is total no-show (<5 mins)
+                                                        // Logic: 
+                                                        // 1. Provider >= 70% -> Payment to Provider
+                                                        // 2. Provider < 70% -> Refund to Student (Covers no-show, both no-show, partial attendance)
 
-                                                        const providerFailed = providerOnline < (duration * 0.7);
-                                                        const providerLeftEarly = providerOnline < studentOnline;
-                                                        const providerNoShow = providerOnline < 5;
+                                                        const providerQualifies = providerOnline >= requiredTime;
 
-                                                        const canRefund = isSessionOver && (providerNoShow || (providerFailed && providerLeftEarly));
+                                                        if (role === 'provider') {
+                                                            if (providerQualifies) {
+                                                                return (
+                                                                    <motion.button
+                                                                        whileHover={{ scale: 1.05 }}
+                                                                        whileTap={{ scale: 0.95 }}
+                                                                        onClick={() => handleEndSession(booking)}
+                                                                        disabled={processingId === booking._id}
+                                                                        className="px-3 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-lg text-[10px] font-bold flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 hover:from-emerald-700 hover:to-teal-700 disabled:opacity-50"
+                                                                    >
+                                                                        {processingId === booking._id ? <Loader2 size={14} className="animate-spin" /> : 'Claim Payment'}
+                                                                    </motion.button>
+                                                                );
+                                                            } else {
+                                                                return (
+                                                                    <div className="px-3 py-2 bg-gray-100 text-gray-400 rounded-lg text-[10px] font-bold border border-gray-200 cursor-not-allowed" title="Attendance < 70%">
+                                                                        Attendance too low ({Math.round(providerOnline)}m)
+                                                                    </div>
+                                                                );
+                                                            }
+                                                        }
 
-                                                        if (isSessionOver) {
-                                                            if (canRefund) {
+                                                        if (role === 'student') {
+                                                            if (!providerQualifies) {
                                                                 return (
                                                                     <motion.button
                                                                         whileHover={{ scale: 1.05 }}
@@ -485,26 +448,27 @@ export default function BookingsPage() {
                                                                         onClick={() => handleClaimRefund(booking)}
                                                                         disabled={processingId === booking._id}
                                                                         className="px-3 py-2 bg-orange-50 text-orange-600 border border-orange-100 rounded-lg text-[10px] font-bold hover:bg-orange-100 transition-colors flex items-center gap-1 disabled:opacity-50"
-                                                                        title="Provider missed session or left early"
+                                                                        title="Provider attendance < 70%"
                                                                     >
                                                                         {processingId === booking._id ? <Loader2 size={14} className="animate-spin" /> : <><AlertCircle size={14} /> Claim Refund</>}
                                                                     </motion.button>
                                                                 );
                                                             } else {
-                                                                // If session over but Provider succeded (or student failed worse), allow 'Mark Completed'
+                                                                // Provider qualified, allowing student to mark complete (or they can just wait for provider to claim)
                                                                 return (
                                                                     <motion.button
                                                                         whileHover={{ scale: 1.05 }}
                                                                         whileTap={{ scale: 0.95 }}
-                                                                        onClick={() => handleEndSession(booking)}
+                                                                        onClick={() => setReviewBookingId(booking._id)}
                                                                         disabled={processingId === booking._id}
                                                                         className="px-3 py-2 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-lg text-[10px] font-bold hover:bg-emerald-100 transition-colors flex items-center gap-1 disabled:opacity-50"
                                                                     >
-                                                                        {processingId === booking._id ? <Loader2 size={14} className="animate-spin" /> : <><CheckCircle size={14} /> Mark Completed</>}
+                                                                        Rate Session
                                                                     </motion.button>
                                                                 );
                                                             }
                                                         }
+
                                                         return null;
                                                     })()}
                                                 </>

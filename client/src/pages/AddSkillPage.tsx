@@ -164,7 +164,7 @@ export default function AddSkillPage() {
                                 <input
                                     type="number"
                                     required
-                                    min="15"
+                                    min="5"
                                     step="15"
                                     className="block w-full pl-10 pr-3 py-2.5 border border-gray-300/60 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-white/50 text-gray-900 placeholder:text-gray-400 outline-none transition-all duration-200 focus:bg-white hover:border-primary-300/70 shadow-sm"
                                     placeholder="60"

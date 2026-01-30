@@ -32,8 +32,8 @@ export const getBookings = async (userId: string, role: 'student' | 'provider') 
     return response.data;
 };
 
-export const updateBookingStatus = async (bookingId: string, status: string) => {
-    const response = await api.patch(`/bookings/${bookingId}/status`, { status });
+export const updateBookingStatus = async (bookingId: string, status: string, extraData: any = {}) => {
+    const response = await api.patch(`/bookings/${bookingId}/status`, { status, ...extraData });
     return response.data;
 };
 

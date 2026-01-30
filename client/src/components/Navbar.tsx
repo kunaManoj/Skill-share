@@ -68,7 +68,7 @@ export default function Navbar() {
             initial={{ y: -100 }}
             animate={{ y: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-2xl border-b border-white/40 shadow-sm shadow-indigo-100/20 supports-[backdrop-filter]:bg-white/60"
+            className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-2xl border-b border-white/40 shadow-sm shadow-indigo-100/20 supports-[backdrop-filter]:bg-white/60 rounded-b-3xl transition-all duration-300"
         >
             <div className="w-full px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16 items-center">

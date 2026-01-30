@@ -22,13 +22,18 @@ export default function ReviewModal({ isOpen, onClose, bookingId }: ReviewModalP
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            await createReview({ bookingId, rating, comment });
-            alert('Review submitted successfully!');
+            await createReview({
+                bookingId,
+                rating,
+                comment,
+            });
+            // alert('Review submitted successfully!'); // Removed alert for smoother UX
             onClose();
-            navigate('/marketplace');
+            // Force reload to update booking list UI
+            window.location.reload();
         } catch (error) {
             console.error('Failed to submit review:', error);
-            alert('Failed to submit review.');
+            // alert('Failed to submit review.');
         } finally {
             setIsSubmitting(false);
         }

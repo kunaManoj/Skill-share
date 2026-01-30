@@ -42,6 +42,11 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB Connected'))
     .catch(err => console.error('MongoDB Connection Error:', err));
 
+// Task Scheduler
+const checkExpiredBookings = require('./cron/checkExpiredBookings');
+// Run every minute
+setInterval(checkExpiredBookings, 60 * 1000);
+
 const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });

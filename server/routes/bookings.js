@@ -140,11 +140,21 @@ router.patch('/:id/status', async (req, res) => {
 
         // Create Notifications based on Status Change
         if (status === 'approved') {
+            // Notify Student
             await Notification.create({
                 userId: booking.studentId,
                 type: 'booking',
                 title: 'Booking Approved! 🎉',
                 message: `Your session for "${booking.skillId.title}" has been approved. Join the meeting at the scheduled time.`,
+                link: `/chat?booking=${booking._id}`
+            });
+
+            // Notify Provider
+            await Notification.create({
+                userId: booking.providerId,
+                type: 'booking',
+                title: 'Session Confirmed ✅',
+                message: `You accepted the booking for "${booking.skillId.title}". The meeting link is ready.`,
                 link: `/chat?booking=${booking._id}`
             });
         } else if (status === 'rejected') {
