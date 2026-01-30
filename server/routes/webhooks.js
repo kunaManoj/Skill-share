@@ -36,16 +36,7 @@ router.post('/clerk', async (req, res) => {
                     firstName: first_name,
                     lastName: last_name,
                     imageUrl: image_url,
-                    // Check if email contains 'admin' OR is in the specific admin list
-                    role: (email.toLowerCase().includes('admin') || ['manojkuna2005@gmail.com', 'owner@unirent.com'].includes(email)) ? 'admin' : undefined, // Don't overwrite to student if they were manually made admin, unless we want strict sync.
-                    // Actually, let's use the $set and $setOnInsert pattern for robustness if we wanted to be partial, but here let's just force ADMIN if matches, otherwise leave as is or default to student on insert.
-                    // Simplified: If match -> admin. If no match -> don't touch (undefined) -> wait, if undefined it won't be in the update object.
-                    // But we want to ensure new users are students.
-                    // Let's go with:
-                    // role: isAdmin ? 'admin' : 'student' (but this demotes manual admins).
-                    // The user specifically wants their email to work.
-                    // So:
-                    role: (email.toLowerCase().includes('admin') || ['manojkuna2005@gmail.com'].includes(email)) ? 'admin' : 'student',
+                    role: (email.toLowerCase().includes('admin') || ['manojkuna2005@gmail.com', 'owner@unirent.com'].includes(email)) ? 'admin' : 'student',
                     updatedAt: new Date(),
                 },
                 { upsert: true, new: true }

@@ -26,11 +26,12 @@ app.use('/api/skills', skillRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/users', require('./routes/users'));
 app.use('/api/payment', require('./routes/payment'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/reviews', require('./routes/reviews'));
 app.use('/api/admin', require('./routes/admin'));
-app.use('/api/dev', require('./routes/dev'));
+
 
 // Health Check
 app.get('/api/health', (req, res) => {

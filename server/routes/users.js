@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 
-// POST /api/dev/sync-user
-router.post('/sync-user', async (req, res) => {
+// POST /api/users/sync
+router.post('/sync', async (req, res) => {
     try {
         const { clerkId, email, firstName, lastName, imageUrl } = req.body;
 
@@ -27,10 +27,6 @@ router.post('/sync-user', async (req, res) => {
 
         if (isAdmin) {
             updateData.role = 'admin';
-        } else {
-            // Optional: If you want to demote non-admins, uncomment below. 
-            // But usually we just want to promote.
-            // updateData.role = 'student';
         }
 
         const user = await User.findOneAndUpdate(
@@ -44,27 +40,7 @@ router.post('/sync-user', async (req, res) => {
 
         res.json({ success: true, user });
     } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
-// POST /api/dev/make-admin
-// Body: { userId } (clerkId)
-router.post('/make-admin', async (req, res) => {
-    try {
-        const { userId } = req.body;
-        if (!userId) return res.status(400).json({ error: 'Missing userId' });
-
-        const user = await User.findOneAndUpdate(
-            { clerkId: userId },
-            { role: 'admin' },
-            { new: true }
-        );
-
-        if (!user) return res.status(404).json({ error: 'User not found' });
-
-        res.json({ success: true, user });
-    } catch (err) {
+        console.error("Sync Error:", err);
         res.status(500).json({ error: err.message });
     }
 });

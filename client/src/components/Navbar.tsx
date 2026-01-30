@@ -2,7 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { SignedIn, SignedOut, UserButton, useUser } from '@clerk/clerk-react';
 import { Menu, X, BookOpen, Wallet, GraduationCap, Shield, Bell, Zap } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { devSyncUser } from '../lib/api';
+import { syncUser } from '../lib/api';
 import clsx from 'clsx';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -15,7 +15,7 @@ export default function Navbar() {
     // Dev: Auto-sync user to DB on load
     useEffect(() => {
         if (user) {
-            devSyncUser({
+            syncUser({
                 clerkId: user.id,
                 email: user.primaryEmailAddress?.emailAddress,
                 firstName: user.firstName,

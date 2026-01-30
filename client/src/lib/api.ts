@@ -53,21 +53,9 @@ export const sendHeartbeat = async (bookingId: string, role: 'student' | 'provid
 };
 
 // Payment APIs
-export const createPaymentOrder = async (amount: number) => {
-    const response = await api.post('/payment/create-order', { amount });
-    return response.data;
-};
 
-export const verifyPayment = async (data: {
-    razorpay_order_id: string,
-    razorpay_payment_id: string,
-    razorpay_signature: string,
-    bookingId: string,
-    amount: number
-}) => {
-    const response = await api.post('/payment/verify-payment', data);
-    return response.data;
-};
+
+
 
 // Escrow Payment APIs (Pre-payment flow)
 export const createEscrowOrder = async (amount: number, bookingId: string) => {
@@ -180,13 +168,13 @@ export const getAdminBookings = async (adminId: string) => {
     return response.data;
 };
 
-export const devMakeAdmin = async (userId: string) => {
-    const response = await api.post('/dev/make-admin', { userId });
-    return response.data;
-};
 
-export const devSyncUser = async (userData: any) => {
-    const response = await api.post('/dev/sync-user', userData);
+
+
+
+
+export const syncUser = async (userData: any) => {
+    const response = await api.post('/users/sync', userData);
     return response.data;
 };
 
