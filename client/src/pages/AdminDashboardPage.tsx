@@ -284,7 +284,7 @@ export default function AdminDashboardPage() {
                                         </div>
                                         <button
                                             onClick={() => handleDeleteSkill(skill._id)}
-                                            className="text-gray-300 hover:text-red-500 p-2 self-start rounded-lg hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                                            className="text-red-500 hover:text-red-600 p-2 self-start rounded-lg hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
                                             title="Delete Skill"
                                         >
                                             <Trash2 size={18} />

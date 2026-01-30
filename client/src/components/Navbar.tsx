@@ -74,7 +74,7 @@ export default function Navbar() {
             <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
 
             <div className="w-full px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between h-16 items-center">
+                <div className="flex justify-between h-16 items-center relative">
                     {/* Logo Area */}
                     <div className="flex items-center gap-2">
                         <Link to="/" className="flex items-center gap-2 group relative">
@@ -91,7 +91,7 @@ export default function Navbar() {
                     </div>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center gap-1">
+                    <div className="hidden md:flex items-center gap-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                         <SignedIn>
                             <IconLink to="/marketplace" icon={<Shield size={18} />} label="Explore" active={isActive('/marketplace')} />
                             <IconLink to="/skills/new" icon={<Zap size={18} />} label="Share" active={isActive('/skills/new')} />
