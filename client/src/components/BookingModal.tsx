@@ -146,24 +146,24 @@ export default function BookingModal({ skillId, skillTitle, providerId, studentI
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                        className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-hidden relative"
+                        className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-3xl w-full max-w-md shadow-2xl overflow-hidden relative"
                     >
                         {/* Background Glow */}
-                        <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary-100/50 rounded-full blur-3xl pointer-events-none" />
+
 
                         {/* Header */}
-                        <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-white/80 backdrop-blur-sm relative z-10">
+                        <div className="p-6 border-b border-[var(--border-color)] flex justify-between items-center bg-[var(--bg-card)]/80 backdrop-blur-sm relative z-10">
                             <div>
-                                <h2 className="text-xl font-black text-gray-900 tracking-tight">
+                                <h2 className="text-xl font-black text-[var(--text-primary)] tracking-tight">
                                     {step === 'details' ? 'Book Session' : 'Secure Payment'}
                                 </h2>
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mt-1">
+                                <p className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mt-1">
                                     {step === 'details' ? 'Step 1 of 2' : 'Step 2 of 2'}
                                 </p>
                             </div>
                             <button
                                 onClick={onClose}
-                                className="text-gray-400 hover:text-gray-900 transition-colors p-2 hover:bg-gray-100/50 rounded-full"
+                                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors p-2 hover:bg-[var(--bg-glass-subtle)] rounded-full"
                             >
                                 <X size={20} />
                             </button>
@@ -181,8 +181,8 @@ export default function BookingModal({ skillId, skillTitle, providerId, studentI
                                     >
                                         <form onSubmit={handleDetailsSubmit} className="p-6 space-y-6">
                                             <div>
-                                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Skill</label>
-                                                <div className="text-gray-900 font-bold bg-gray-50/50 px-4 py-3 rounded-xl border border-gray-100 flex items-center gap-2">
+                                                <label className="block text-xs font-bold text-[var(--text-secondary)] uppercase mb-1.5">Skill</label>
+                                                <div className="text-[var(--text-primary)] font-bold bg-[var(--bg-glass-subtle)] px-4 py-3 rounded-xl border border-[var(--border-color)] flex items-center gap-2">
                                                     <div className="w-2 h-2 rounded-full bg-primary-500" />
                                                     {skillTitle}
                                                 </div>
@@ -190,27 +190,27 @@ export default function BookingModal({ skillId, skillTitle, providerId, studentI
 
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
-                                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Date</label>
+                                                    <label className="block text-xs font-bold text-[var(--text-secondary)] uppercase mb-1.5">Date</label>
                                                     <div className="relative group">
-                                                        <Calendar className="absolute left-3 top-3 text-gray-400 group-focus-within:text-primary-500 transition-colors" size={18} />
+                                                        <Calendar className="absolute left-3 top-3 text-[var(--text-secondary)] group-focus-within:text-primary-500 transition-colors" size={18} />
                                                         <input
                                                             type="date"
                                                             required
                                                             min={new Date().toISOString().split('T')[0]}
-                                                            className="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-white text-gray-900 font-medium transition-all outline-none"
+                                                            className="block w-full pl-10 pr-3 py-2.5 border border-[var(--border-color)] rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-[var(--bg-card)] text-[var(--text-primary)] font-medium transition-all outline-none"
                                                             value={date}
                                                             onChange={e => setDate(e.target.value)}
                                                         />
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Time</label>
+                                                    <label className="block text-xs font-bold text-[var(--text-secondary)] uppercase mb-1.5">Time</label>
                                                     <div className="relative group">
-                                                        <Clock className="absolute left-3 top-3 text-gray-400 group-focus-within:text-primary-500 transition-colors" size={18} />
+                                                        <Clock className="absolute left-3 top-3 text-[var(--text-secondary)] group-focus-within:text-primary-500 transition-colors" size={18} />
                                                         <input
                                                             type="time"
                                                             required
-                                                            className="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-white text-gray-900 font-medium transition-all outline-none"
+                                                            className="block w-full pl-10 pr-3 py-2.5 border border-[var(--border-color)] rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-[var(--bg-card)] text-[var(--text-primary)] font-medium transition-all outline-none"
                                                             value={time}
                                                             onChange={e => setTime(e.target.value)}
                                                         />
@@ -219,11 +219,11 @@ export default function BookingModal({ skillId, skillTitle, providerId, studentI
                                             </div>
 
                                             <div>
-                                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Message for Provider</label>
+                                                <label className="block text-xs font-bold text-[var(--text-secondary)] uppercase mb-1.5">Message for Provider</label>
                                                 <textarea
                                                     rows={3}
                                                     placeholder="Hi, I need help with..."
-                                                    className="block w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-white text-gray-900 placeholder:text-gray-400 transition-all outline-none resize-none font-medium"
+                                                    className="block w-full p-3 border border-[var(--border-color)] rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-[var(--bg-card)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] transition-all outline-none resize-none font-medium"
                                                     value={note}
                                                     onChange={e => setNote(e.target.value)}
                                                 />
@@ -249,15 +249,15 @@ export default function BookingModal({ skillId, skillTitle, providerId, studentI
                                         className="p-6 space-y-6"
                                     >
                                         {/* Escrow Info Banner */}
-                                        <div className="bg-emerald-50/50 border border-emerald-100 rounded-xl p-4 relative overflow-hidden">
-                                            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-100/30 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                                        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 relative overflow-hidden">
+                                            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
                                             <div className="flex items-start gap-3 relative z-10">
-                                                <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
+                                                <div className="p-2 bg-emerald-500/20 text-emerald-500 rounded-lg">
                                                     <Shield size={20} />
                                                 </div>
                                                 <div>
-                                                    <h3 className="font-bold text-emerald-900 text-sm">Secure Escrow Payment</h3>
-                                                    <p className="text-emerald-700 text-xs mt-1 leading-relaxed font-medium">
+                                                    <h3 className="font-bold text-emerald-500 text-sm">Secure Escrow Payment</h3>
+                                                    <p className="text-emerald-500/80 text-xs mt-1 leading-relaxed font-medium">
                                                         Your payment is held securely until the session wraps up.
                                                         Full refund if the provider cancels.
                                                     </p>
@@ -266,18 +266,18 @@ export default function BookingModal({ skillId, skillTitle, providerId, studentI
                                         </div>
 
                                         {/* Order Summary */}
-                                        <div className="bg-gray-50/50 rounded-2xl p-5 space-y-4 border border-gray-100">
-                                            <h3 className="font-bold text-gray-900 text-xs uppercase tracking-wide">Order Summary</h3>
+                                        <div className="bg-[var(--bg-card)] rounded-2xl p-5 space-y-4 border border-[var(--border-color)]">
+                                            <h3 className="font-bold text-[var(--text-primary)] text-xs uppercase tracking-wide">Order Summary</h3>
 
                                             <div className="space-y-3">
                                                 <div className="flex justify-between text-sm">
-                                                    <span className="text-gray-500 font-medium">Skill</span>
-                                                    <span className="font-bold text-gray-900">{skillTitle}</span>
+                                                    <span className="text-[var(--text-secondary)] font-medium">Skill</span>
+                                                    <span className="font-bold text-[var(--text-primary)]">{skillTitle}</span>
                                                 </div>
 
                                                 <div className="flex justify-between text-sm">
-                                                    <span className="text-gray-500 font-medium">Date & Time</span>
-                                                    <span className="font-bold text-gray-900">
+                                                    <span className="text-[var(--text-secondary)] font-medium">Date & Time</span>
+                                                    <span className="font-bold text-[var(--text-primary)]">
                                                         {date && time ? new Date(`${date}T${time}`).toLocaleString('en-IN', {
                                                             dateStyle: 'medium',
                                                             timeStyle: 'short'
@@ -286,9 +286,9 @@ export default function BookingModal({ skillId, skillTitle, providerId, studentI
                                                 </div>
                                             </div>
 
-                                            <div className="border-t border-gray-200/60 pt-4 mt-2">
+                                            <div className="border-t border-[var(--border-color)] pt-4 mt-2">
                                                 <div className="flex justify-between items-center">
-                                                    <span className="font-black text-gray-900">Total</span>
+                                                    <span className="font-black text-[var(--text-primary)]">Total</span>
                                                     <span className="text-2xl font-black text-primary-600">₹{price}</span>
                                                 </div>
                                             </div>
@@ -299,7 +299,7 @@ export default function BookingModal({ skillId, skillTitle, providerId, studentI
                                             <button
                                                 onClick={handleBack}
                                                 disabled={loading}
-                                                className="flex-1 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-xl transition-all disabled:opacity-50"
+                                                className="flex-1 py-3.5 bg-[var(--bg-glass-subtle)] hover:bg-[var(--bg-glass-strong)] border border-[var(--border-color)] text-[var(--text-secondary)] font-bold rounded-xl transition-all disabled:opacity-50"
                                             >
                                                 Back
                                             </button>
@@ -308,7 +308,7 @@ export default function BookingModal({ skillId, skillTitle, providerId, studentI
                                                 whileTap={{ scale: 0.98 }}
                                                 onClick={handlePayment}
                                                 disabled={loading}
-                                                className="flex-1 py-3.5 bg-black hover:bg-gray-900 text-white font-bold rounded-xl shadow-lg shadow-gray-900/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                                className="flex-1 py-3.5 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl shadow-lg shadow-primary-600/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                             >
                                                 {loading ? (
                                                     <>

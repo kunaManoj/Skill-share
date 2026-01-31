@@ -29,11 +29,16 @@ router.post('/sync', async (req, res) => {
             updateData.role = 'admin';
         }
 
+        const setOnInsert = { createdAt: new Date() };
+        if (!isAdmin) {
+            setOnInsert.role = 'student';
+        }
+
         const user = await User.findOneAndUpdate(
             { clerkId },
             {
                 $set: updateData,
-                $setOnInsert: { role: isAdmin ? 'admin' : 'student', createdAt: new Date() }
+                $setOnInsert: setOnInsert
             },
             { upsert: true, new: true, setDefaultsOnInsert: true }
         );

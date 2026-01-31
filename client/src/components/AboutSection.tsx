@@ -41,10 +41,10 @@ const AboutSection = () => {
     ];
 
     return (
-        <section className="relative py-24 px-6 md:px-12 overflow-hidden bg-gradient-to-b from-white to-primary-50/30">
+        <section className="relative py-24 px-6 md:px-12 overflow-hidden bg-gradient-to-b from-[var(--bg-primary)] to-[var(--bg-glass-subtle)]">
             {/* Background decorations */}
-            <div className="absolute top-20 right-0 w-72 h-72 bg-primary-100/50 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-20 left-0 w-72 h-72 bg-secondary-100/30 rounded-full blur-3xl"></div>
+            {/* Background decorations - Deep Space Aesthetic */}
+
 
             <div className="max-w-6xl mx-auto relative z-10">
                 {/* Section Header */}
@@ -54,7 +54,7 @@ const AboutSection = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.5 }}
-                        className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/60 backdrop-blur-md border border-white/40 text-primary-700 text-xs font-bold tracking-widest uppercase mb-4 shadow-lg shadow-primary-500/10"
+                        className="inline-flex items-center px-4 py-1.5 rounded-full bg-[var(--bg-glass-subtle)] backdrop-blur-md border border-[var(--border-color)] text-primary-600 text-xs font-bold tracking-widest uppercase mb-4 shadow-lg shadow-primary-500/10"
                     >
                         About Us
                     </motion.div>
@@ -63,7 +63,7 @@ const AboutSection = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.5, delay: 0.2 }}
-                        className="text-4xl md:text-5xl font-black text-gray-900 mb-6 leading-tight"
+                        className="text-4xl md:text-5xl font-black text-[var(--text-primary)] mb-6 leading-tight"
                     >
                         Revolutionizing Learning Through
                         <span className="text-primary-600"> Peer Connection</span>
@@ -73,7 +73,7 @@ const AboutSection = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.5, delay: 0.4 }}
-                        className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
+                        className="text-lg md:text-xl text-[var(--text-secondary)] max-w-3xl mx-auto leading-relaxed"
                     >
                         We believe the best learning happens when students teach students. Our platform connects
                         learners with peer mentors who've walked the same path, creating a supportive environment
@@ -91,15 +91,15 @@ const AboutSection = () => {
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
                             whileHover={{ y: -5, scale: 1.02 }}
-                            className="group relative p-8 rounded-2xl bg-white/50 backdrop-blur-xl border border-white/40 hover:border-primary-300/50 shadow-lg shadow-gray-200/30 hover:shadow-xl hover:shadow-primary-500/10 transition-all duration-300"
+                            className="group relative p-8 rounded-2xl bg-[var(--bg-glass-subtle)] backdrop-blur-xl border border-[var(--border-color)] hover:border-primary-500/50 shadow-lg shadow-gray-200/5 hover:shadow-xl hover:shadow-primary-500/10 transition-all duration-300"
                         >
                             <div className="flex items-start gap-5">
                                 <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 text-white flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:scale-110 transition-transform duration-300">
                                     {feature.icon}
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
-                                    <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                                    <h3 className="text-xl font-bold text-[var(--text-primary)] mb-2">{feature.title}</h3>
+                                    <p className="text-[var(--text-secondary)] leading-relaxed">{feature.description}</p>
                                 </div>
                             </div>
                         </motion.div>
@@ -115,8 +115,7 @@ const AboutSection = () => {
                     className="relative p-10 rounded-3xl bg-gradient-to-r from-primary-600/90 via-primary-700/90 to-primary-800/90 backdrop-blur-xl text-white overflow-hidden border border-white/10 shadow-2xl"
                 >
                     {/* Decorative elements */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+
 
                     <div className="relative z-10 flex flex-col items-center text-center max-w-4xl mx-auto space-y-6">
                         <motion.div
@@ -167,9 +166,9 @@ const AboutSection = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.4 }}
-                    className="mt-16 text-center p-8 rounded-2xl bg-white/40 backdrop-blur-lg border border-white/50 shadow-lg"
+                    className="mt-16 text-center p-8 rounded-2xl bg-[var(--bg-glass-subtle)] backdrop-blur-lg border border-[var(--border-color)] shadow-lg"
                 >
-                    <p className="text-xl text-gray-600 italic max-w-3xl mx-auto leading-relaxed">
+                    <p className="text-xl text-[var(--text-secondary)] italic max-w-3xl mx-auto leading-relaxed">
                         "Peer-to-peer learning isn't just about sharing knowledge—it's about building a community
                         where every student has the potential to be both a learner and a teacher."
                     </p>

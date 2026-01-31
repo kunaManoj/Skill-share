@@ -4,6 +4,7 @@ const Skill = require('../models/Skill');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
 const Escrow = require('../models/Escrow');
+const Review = require('../models/Review');
 
 const router = express.Router();
 
@@ -96,7 +97,10 @@ router.get('/', async (req, res) => {
                 escrow = await Escrow.findById(booking.escrowId);
             }
 
-            return { ...booking.toObject(), otherUser, escrow };
+            // Check if review exists for this booking
+            const hasReviewed = await Review.exists({ bookingId: booking._id });
+
+            return { ...booking.toObject(), otherUser, escrow, hasReviewed: !!hasReviewed };
         }));
 
         res.json(enrichedBookings);

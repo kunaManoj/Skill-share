@@ -35,6 +35,7 @@ const AnimatedRoutes = () => {
                         {/* Hero Section */}
                         <div className="relative overflow-hidden min-h-[calc(100vh-64px)]">
                             {/* Background Image & Overlay */}
+                            {/* Background Image & Overlay */}
                             <motion.div
                                 className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
                                 style={{ backgroundImage: `url('/hero-bg-v2.png')` }}
@@ -42,7 +43,12 @@ const AnimatedRoutes = () => {
                                 animate={{ scale: 1.05 }}
                                 transition={{ duration: 2, ease: "easeOut" }}
                             >
-                                <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-white/95 backdrop-blur-[1px]"></div>
+                                <div
+                                    className="absolute inset-0 backdrop-blur-[1px]"
+                                    style={{
+                                        background: 'linear-gradient(to right, var(--overlay-color-from), var(--overlay-color-via), var(--overlay-color-to))'
+                                    }}
+                                ></div>
                             </motion.div>
 
                             <div className="flex flex-col items-center justify-center min-h-[calc(100vh-64px)] w-full px-6 md:px-12 text-center relative z-10">
@@ -51,13 +57,13 @@ const AnimatedRoutes = () => {
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 0.5, delay: 0.2 }}
-                                        className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-xl border border-purple-200 text-primary-600 text-[10px] font-bold tracking-widest uppercase mb-4 shadow-[0_0_20px_rgba(124,58,237,0.4)] hover:shadow-[0_0_30px_rgba(124,58,237,0.6)] transition-shadow duration-300"
+                                        className="inline-flex items-center px-4 py-1.5 rounded-full bg-[var(--bg-glass-strong)] backdrop-blur-xl border border-purple-200 text-primary-600 text-[10px] font-bold tracking-widest uppercase mb-4 shadow-[0_0_20px_rgba(124,58,237,0.4)] hover:shadow-[0_0_30px_rgba(124,58,237,0.6)] transition-shadow duration-300"
                                     >
                                         <span>Revolutionizing Campus Learning</span>
                                     </motion.div>
 
                                     <motion.h1
-                                        className="flex flex-col items-center font-black tracking-tight text-gray-900 leading-[1.1] drop-shadow-sm"
+                                        className="flex flex-col items-center font-black tracking-tight text-[var(--text-primary)] leading-[1.1] drop-shadow-sm"
                                         initial={{ opacity: 0, y: 30 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 0.6, delay: 0.4 }}
@@ -67,7 +73,7 @@ const AnimatedRoutes = () => {
                                     </motion.h1>
 
                                     <motion.p
-                                        className="text-lg md:text-2xl text-gray-700 max-w-2xl mx-auto leading-relaxed font-medium"
+                                        className="text-lg md:text-2xl text-[var(--text-secondary)] max-w-2xl mx-auto leading-relaxed font-medium"
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 0.6, delay: 0.6 }}
@@ -144,7 +150,7 @@ const PageWrapper = ({ children }: { children: React.ReactNode }) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="w-full"
+            className="w-full bg-[var(--bg-primary)]"
         >
             {children}
         </motion.div>

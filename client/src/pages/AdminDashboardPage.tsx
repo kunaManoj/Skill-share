@@ -91,12 +91,11 @@ export default function AdminDashboardPage() {
 
     if (error) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] text-red-500">
+            <div className="flex flex-col items-center justify-center min-h-[60vh] text-rose-500">
                 <AlertCircle size={48} className="mb-4" />
                 <h1 className="text-2xl font-bold">{error}</h1>
-                <p className="mt-2 text-gray-600 mb-6">Please contact support if you believe this is an error.</p>
+                <p className="mt-2 text-[var(--text-secondary)] mb-6">Please contact support if you believe this is an error.</p>
 
-                {/* Self-Healing Button for Development */}
                 {/* Self-Healing Button for Development */}
                 <button
                     onClick={async () => {
@@ -118,7 +117,7 @@ export default function AdminDashboardPage() {
                             console.error(e);
                         }
                     }}
-                    className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-black transition-colors text-sm font-bold"
+                    className="px-4 py-2 bg-[var(--text-primary)] text-[var(--bg-card)] rounded-lg hover:opacity-90 transition-opacity text-sm font-bold"
                 >
                     Sync & Grant Admin Access
                 </button>
@@ -130,19 +129,18 @@ export default function AdminDashboardPage() {
             <SEO title="Admin Dashboard" />
 
             {/* Ambient Background */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-100/40 rounded-full blur-[100px] -z-10 pointer-events-none mix-blend-multiply" />
-            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-100/40 rounded-full blur-[100px] -z-10 pointer-events-none mix-blend-multiply" />
+
 
             <motion.h1
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="text-3xl font-black text-gray-900 mb-8 tracking-tight"
+                className="text-3xl font-black text-[var(--text-primary)] mb-8 tracking-tight"
             >
                 Admin <span className="text-primary-600">Dashboard</span>
             </motion.h1>
 
             {/* Tabs */}
-            <div className="flex gap-4 border-b border-gray-200/60 mb-8 overflow-x-auto pb-1">
+            <div className="flex gap-4 border-b border-[var(--border-color)] mb-8 overflow-x-auto pb-1">
                 {['stats', 'users', 'skills', 'bookings', 'complaints'].map((t) => (
                     <button
                         key={t}
@@ -151,7 +149,7 @@ export default function AdminDashboardPage() {
                             "pb-4 px-4 text-sm font-bold capitalize whitespace-nowrap transition-all duration-300 relative",
                             tab === t
                                 ? "text-primary-600"
-                                : "text-gray-400 hover:text-gray-600"
+                                : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                         )}
                     >
                         {t}
@@ -166,7 +164,7 @@ export default function AdminDashboardPage() {
             </div>
 
             {loading ? (
-                <div className="text-center py-20 text-gray-400 font-medium animate-pulse">Loading dashboard data...</div>
+                <div className="text-center py-20 text-[var(--text-secondary)] font-medium animate-pulse">Loading dashboard data...</div>
             ) : (
                 <AnimatePresence mode="wait">
                     <motion.div
@@ -178,30 +176,30 @@ export default function AdminDashboardPage() {
                     >
                         {tab === 'stats' && stats && (
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <motion.div whileHover={{ y: -5 }} className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg shadow-gray-100/50 border border-white/60 flex items-center justify-between group">
+                                <motion.div whileHover={{ y: -5 }} className="bg-[var(--bg-card)] backdrop-blur-sm p-6 rounded-2xl shadow-lg shadow-[var(--border-color)] border border-[var(--border-color)] flex items-center justify-between group">
                                     <div>
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Users</p>
-                                        <h3 className="text-4xl font-black text-gray-900 mt-1">{stats.totalUsers}</h3>
+                                        <p className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest">Total Users</p>
+                                        <h3 className="text-4xl font-black text-[var(--text-primary)] mt-1">{stats.totalUsers}</h3>
                                     </div>
-                                    <div className="p-4 bg-blue-50 text-blue-600 rounded-2xl group-hover:scale-110 transition-transform duration-300">
+                                    <div className="p-4 bg-blue-500/10 text-blue-600 rounded-2xl group-hover:scale-110 transition-transform duration-300">
                                         <Users size={28} />
                                     </div>
                                 </motion.div>
-                                <motion.div whileHover={{ y: -5 }} className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg shadow-gray-100/50 border border-white/60 flex items-center justify-between group">
+                                <motion.div whileHover={{ y: -5 }} className="bg-[var(--bg-card)] backdrop-blur-sm p-6 rounded-2xl shadow-lg shadow-[var(--border-color)] border border-[var(--border-color)] flex items-center justify-between group">
                                     <div>
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Skills</p>
-                                        <h3 className="text-4xl font-black text-gray-900 mt-1">{stats.totalSkills}</h3>
+                                        <p className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest">Total Skills</p>
+                                        <h3 className="text-4xl font-black text-[var(--text-primary)] mt-1">{stats.totalSkills}</h3>
                                     </div>
-                                    <div className="p-4 bg-purple-50 text-purple-600 rounded-2xl group-hover:scale-110 transition-transform duration-300">
+                                    <div className="p-4 bg-purple-500/10 text-purple-600 rounded-2xl group-hover:scale-110 transition-transform duration-300">
                                         <Book size={28} />
                                     </div>
                                 </motion.div>
-                                <motion.div whileHover={{ y: -5 }} className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg shadow-gray-100/50 border border-white/60 flex items-center justify-between group">
+                                <motion.div whileHover={{ y: -5 }} className="bg-[var(--bg-card)] backdrop-blur-sm p-6 rounded-2xl shadow-lg shadow-[var(--border-color)] border border-[var(--border-color)] flex items-center justify-between group">
                                     <div>
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Bookings</p>
-                                        <h3 className="text-4xl font-black text-gray-900 mt-1">{stats.totalBookings}</h3>
+                                        <p className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest">Total Bookings</p>
+                                        <h3 className="text-4xl font-black text-[var(--text-primary)] mt-1">{stats.totalBookings}</h3>
                                     </div>
-                                    <div className="p-4 bg-green-50 text-green-600 rounded-2xl group-hover:scale-110 transition-transform duration-300">
+                                    <div className="p-4 bg-green-500/10 text-green-600 rounded-2xl group-hover:scale-110 transition-transform duration-300">
                                         <Activity size={28} />
                                     </div>
                                 </motion.div>
@@ -209,9 +207,9 @@ export default function AdminDashboardPage() {
                         )}
 
                         {tab === 'users' && (
-                            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg shadow-gray-100/50 border border-white/60 overflow-hidden">
+                            <div className="bg-[var(--bg-card)] backdrop-blur-sm rounded-2xl shadow-lg shadow-[var(--border-color)] border border-[var(--border-color)] overflow-hidden">
                                 <table className="w-full text-left">
-                                    <thead className="bg-gray-50/50 text-gray-400 text-[10px] uppercase font-bold tracking-wider border-b border-gray-100">
+                                    <thead className="bg-[var(--bg-glass-subtle)] text-[var(--text-secondary)] text-[10px] uppercase font-bold tracking-wider border-b border-[var(--border-color)]">
                                         <tr>
                                             <th className="px-6 py-4">User</th>
                                             <th className="px-6 py-4">Role</th>
@@ -220,43 +218,43 @@ export default function AdminDashboardPage() {
                                             <th className="px-6 py-4 text-right">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-100/50">
+                                    <tbody className="divide-y divide-[var(--border-color)]">
                                         {usersList.map((u) => (
-                                            <tr key={u._id} className="hover:bg-gray-50/80 transition-colors">
+                                            <tr key={u._id} className="hover:bg-[var(--bg-glass-subtle)] transition-colors">
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
                                                         {u.imageUrl ? (
-                                                            <img src={u.imageUrl} className="w-10 h-10 rounded-xl object-cover shadow-sm bg-gray-100" />
+                                                            <img src={u.imageUrl} className="w-10 h-10 rounded-xl object-cover shadow-sm bg-[var(--bg-glass-subtle)]" />
                                                         ) : (
                                                             <div className="w-10 h-10 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl" />
                                                         )}
                                                         <div>
-                                                            <p className="text-sm font-bold text-gray-900">{u.firstName} {u.lastName}</p>
-                                                            <p className="text-xs text-gray-500 font-medium">{u.email}</p>
+                                                            <p className="text-sm font-bold text-[var(--text-primary)]">{u.firstName} {u.lastName}</p>
+                                                            <p className="text-xs text-[var(--text-secondary)] font-medium">{u.email}</p>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <span className={clsx("px-2.5 py-1 rounded-lg text-xs font-bold capitalize",
-                                                        u.role === 'admin' ? "bg-purple-100 text-purple-700" : "bg-gray-100 text-gray-600"
+                                                        u.role === 'admin' ? "bg-purple-500/10 text-purple-600" : "bg-[var(--bg-glass-subtle)] text-[var(--text-secondary)]"
                                                     )}>
                                                         {u.role}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-1.5">
-                                                        <div className="h-1.5 w-16 bg-gray-100 rounded-full overflow-hidden">
+                                                        <div className="h-1.5 w-16 bg-[var(--bg-glass-subtle)] rounded-full overflow-hidden">
                                                             <div
                                                                 className="h-full bg-primary-500 rounded-full"
                                                                 style={{ width: `${Math.min(u.trustScore, 100)}%` }}
                                                             />
                                                         </div>
-                                                        <span className="text-xs font-bold text-gray-700">{u.trustScore}</span>
+                                                        <span className="text-xs font-bold text-[var(--text-secondary)]">{u.trustScore}</span>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <span className={clsx("px-2.5 py-1 text-xs rounded-full font-bold uppercase tracking-wide",
-                                                        u.isBanned ? "bg-red-50 text-red-600 border border-red-100" : "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                                                        u.isBanned ? "bg-red-500/10 text-red-600 border border-red-500/20" : "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
                                                     )}>
                                                         {u.isBanned ? 'Banned' : 'Active'}
                                                     </span>
@@ -265,7 +263,7 @@ export default function AdminDashboardPage() {
                                                     <button
                                                         onClick={() => handleBanToggle(u._id, u.isBanned)}
                                                         className={clsx("p-2 rounded-lg transition-all hover:scale-110",
-                                                            u.isBanned ? "text-emerald-500 hover:bg-emerald-50" : "text-rose-400 hover:bg-rose-50 hover:text-rose-500"
+                                                            u.isBanned ? "text-emerald-500 hover:bg-emerald-500/10" : "text-rose-400 hover:bg-rose-500/10 hover:text-rose-500"
                                                         )}
                                                         title={u.isBanned ? "Unban User" : "Ban User"}
                                                     >
@@ -287,12 +285,12 @@ export default function AdminDashboardPage() {
                                         animate={{ opacity: 1 }}
                                         whileHover={{ y: -2 }}
                                         key={skill._id}
-                                        className="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-white/60 shadow-sm hover:shadow-md transition-all flex justify-between gap-4 group"
+                                        className="bg-[var(--bg-card)] backdrop-blur-sm p-4 rounded-xl border border-[var(--border-color)] shadow-sm hover:shadow-md transition-all flex justify-between gap-4 group"
                                     >
                                         <div>
-                                            <h4 className="font-bold text-gray-900 line-clamp-1">{skill.title}</h4>
+                                            <h4 className="font-bold text-[var(--text-primary)] line-clamp-1">{skill.title}</h4>
                                             <p className="text-xs font-bold text-primary-600 mb-1">{skill.category}</p>
-                                            <p className="text-xs text-gray-500 font-medium">
+                                            <p className="text-xs text-[var(--text-secondary)] font-medium">
                                                 by {skill.provider?.firstName} {skill.provider?.lastName}
                                             </p>
                                         </div>
@@ -309,9 +307,9 @@ export default function AdminDashboardPage() {
                         )}
 
                         {tab === 'bookings' && (
-                            <div className="max-w-6xl mx-auto bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg shadow-gray-100/50 border border-white/60 overflow-hidden">
+                            <div className="max-w-6xl mx-auto bg-[var(--bg-card)] backdrop-blur-sm rounded-2xl shadow-lg shadow-[var(--border-color)] border border-[var(--border-color)] overflow-hidden">
                                 <table className="w-full text-center">
-                                    <thead className="bg-gray-50/50 text-gray-400 text-[10px] uppercase font-bold tracking-wider border-b border-gray-100">
+                                    <thead className="bg-[var(--bg-glass-subtle)] text-[var(--text-secondary)] text-[10px] uppercase font-bold tracking-wider border-b border-[var(--border-color)]">
                                         <tr>
                                             <th className="px-6 py-4 text-center">Date</th>
                                             <th className="px-6 py-4 text-center">Skill</th>
@@ -320,20 +318,20 @@ export default function AdminDashboardPage() {
                                             <th className="px-6 py-4 text-center">Status</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-gray-100/50">
+                                    <tbody className="divide-y divide-[var(--border-color)]">
                                         {bookingsList.map((b) => (
-                                            <tr key={b._id} className="hover:bg-gray-50/80 transition-colors">
-                                                <td className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wide">
+                                            <tr key={b._id} className="hover:bg-[var(--bg-glass-subtle)] transition-colors">
+                                                <td className="px-6 py-4 text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wide">
                                                     {format(new Date(b.createdAt), 'MMM d, yyyy')}
                                                 </td>
-                                                <td className="px-6 py-4 text-sm font-bold text-gray-900">{b.skillTitle}</td>
-                                                <td className="px-6 py-4 text-sm text-gray-600 font-medium">{b.studentName}</td>
-                                                <td className="px-6 py-4 text-sm text-gray-600 font-medium">{b.providerName}</td>
+                                                <td className="px-6 py-4 text-sm font-bold text-[var(--text-primary)]">{b.skillTitle}</td>
+                                                <td className="px-6 py-4 text-sm text-[var(--text-secondary)] font-medium">{b.studentName}</td>
+                                                <td className="px-6 py-4 text-sm text-[var(--text-secondary)] font-medium">{b.providerName}</td>
                                                 <td className="px-6 py-4">
                                                     <span className={clsx("px-2.5 py-1 text-xs rounded-lg font-bold uppercase tracking-wider border",
-                                                        b.status === 'completed' ? "bg-green-50 text-green-700 border-green-200" :
-                                                            b.status === 'cancelled' ? "bg-red-50 text-red-700 border-red-200" :
-                                                                "bg-blue-50 text-blue-700 border-blue-200"
+                                                        b.status === 'completed' ? "bg-green-500/10 text-green-600 border-green-500/20" :
+                                                            b.status === 'cancelled' ? "bg-red-500/10 text-red-600 border-red-500/20" :
+                                                                "bg-blue-500/10 text-blue-600 border-blue-500/20"
                                                     )}>
                                                         {b.status}
                                                     </span>
@@ -352,22 +350,22 @@ export default function AdminDashboardPage() {
                                         key={c._id}
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
-                                        className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-white/60 shadow-sm"
+                                        className="bg-[var(--bg-card)] backdrop-blur-sm p-6 rounded-2xl border border-[var(--border-color)] shadow-sm"
                                     >
                                         <div className="flex justify-between items-start">
                                             <div>
                                                 <div className="flex items-center gap-2 mb-1">
                                                     <span className={clsx("px-2 py-0.5 rounded text-[10px] font-bold uppercase",
-                                                        c.status === 'resolved' ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                                                        c.status === 'resolved' ? "bg-green-500/10 text-green-600" : "bg-red-500/10 text-red-600"
                                                     )}>
                                                         {c.status}
                                                     </span>
-                                                    <span className="text-xs text-gray-400 font-medium">
+                                                    <span className="text-xs text-[var(--text-secondary)] font-medium">
                                                         {format(new Date(c.createdAt), 'MMM d, yyyy HH:mm')}
                                                     </span>
                                                 </div>
-                                                <h3 className="text-lg font-bold text-gray-900">{c.title}</h3>
-                                                <p className="text-sm text-gray-600 mt-2">{c.description}</p>
+                                                <h3 className="text-lg font-bold text-[var(--text-primary)]">{c.title}</h3>
+                                                <p className="text-sm text-[var(--text-secondary)] mt-2">{c.description}</p>
                                                 <div className="mt-4 text-xs text-gray-400 font-mono">
                                                     Reported by: {c.userName || c.userEmail} ({c.userId})
                                                 </div>
@@ -375,7 +373,7 @@ export default function AdminDashboardPage() {
                                             {c.status !== 'resolved' && (
                                                 <button
                                                     onClick={() => handleResolveComplaint(c._id)}
-                                                    className="px-4 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg hover:bg-black transition-colors"
+                                                    className="px-4 py-2 bg-[var(--text-primary)] text-[var(--bg-primary)] text-xs font-bold rounded-lg hover:opacity-90 transition-opacity"
                                                 >
                                                     Mark Resolved
                                                 </button>

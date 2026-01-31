@@ -30,58 +30,58 @@ export default function NotificationDropdown({ onClose }: { onClose: () => void 
     };
 
     return (
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden flex flex-col max-h-[400px]">
-            <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+        <div className="bg-[var(--bg-card)] rounded-2xl shadow-xl border border-[var(--border-color)] overflow-hidden flex flex-col max-h-[400px]">
+            <div className="p-4 border-b border-[var(--border-color)] flex items-center justify-between bg-[var(--bg-glass-subtle)]">
                 <div className="flex items-center gap-2">
                     <Bell size={16} className="text-primary-600" />
-                    <h3 className="font-bold text-gray-900 text-sm">Notifications</h3>
+                    <h3 className="font-bold text-[var(--text-primary)] text-sm">Notifications</h3>
                 </div>
-                <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100 transition-colors">
+                <button onClick={onClose} className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] p-1 rounded-lg hover:bg-[var(--bg-glass-subtle)] transition-colors">
                     <X size={16} />
                 </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto min-h-[100px] bg-white">
+            <div className="flex-1 overflow-y-auto min-h-[100px] bg-[var(--bg-card)]">
                 {loading ? (
-                    <div className="p-8 text-center text-gray-400 text-xs">Loading...</div>
+                    <div className="p-8 text-center text-[var(--text-secondary)] text-xs">Loading...</div>
                 ) : notifications.length === 0 ? (
-                    <div className="p-8 text-center text-gray-400 text-xs flex flex-col items-center gap-2">
+                    <div className="p-8 text-center text-[var(--text-secondary)] text-xs flex flex-col items-center gap-2">
                         <Bell size={24} className="opacity-20" />
                         No notifications yet
                     </div>
                 ) : (
-                    <div className="divide-y divide-gray-50">
+                    <div className="divide-y divide-[var(--border-color)]">
                         {notifications.map((notif) => (
                             <div
                                 key={notif._id}
                                 className={clsx(
-                                    "p-4 hover:bg-gray-50 transition-colors relative group",
-                                    !notif.isRead && "bg-blue-50/30"
+                                    "p-4 hover:bg-[var(--bg-glass-subtle)] transition-all relative group border-l-2 hover:shadow-[0_0_20px_rgba(139,92,246,0.15)]",
+                                    !notif.isRead ? "bg-primary-500/10 border-primary-500" : "border-transparent"
                                 )}
                                 onClick={() => !notif.isRead && markAsRead(notif._id)}
                             >
                                 <div className="flex gap-3">
                                     <div className={clsx(
                                         "w-2 h-2 rounded-full mt-1.5 flex-shrink-0",
-                                        !notif.isRead ? "bg-primary-500" : "bg-gray-200"
+                                        !notif.isRead ? "bg-primary-500" : "bg-[var(--text-secondary)] opacity-50"
                                     )} />
                                     <div className="flex-1">
-                                        <h4 className={clsx("text-xs font-bold mb-0.5", !notif.isRead ? "text-gray-900" : "text-gray-600")}>
+                                        <h4 className={clsx("text-xs font-bold mb-0.5", !notif.isRead ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)]")}>
                                             {notif.title}
                                         </h4>
-                                        <p className="text-xs text-gray-500 leading-relaxed theme-dependent-gray">
+                                        <p className="text-xs text-[var(--text-secondary)] leading-relaxed theme-dependent-gray">
                                             {notif.message}
                                         </p>
 
                                         <div className="flex items-center justify-between mt-2">
-                                            <span className="text-[10px] text-gray-400 font-medium">
+                                            <span className="text-[10px] text-[var(--text-secondary)] opacity-70 font-medium">
                                                 {format(new Date(notif.createdAt), 'MMM d, p')}
                                             </span>
                                             {notif.link && (
                                                 <Link
                                                     to={notif.link}
                                                     onClick={onClose}
-                                                    className="flex items-center gap-1 text-[10px] font-bold text-primary-600 hover:text-primary-700 bg-primary-50 px-2 py-1 rounded-md transition-colors"
+                                                    className="flex items-center gap-1 text-[10px] font-bold text-primary-600 hover:text-primary-700 bg-primary-500/10 hover:bg-primary-500/20 px-2 py-1 rounded-md transition-colors"
                                                 >
                                                     View <ExternalLink size={10} />
                                                 </Link>

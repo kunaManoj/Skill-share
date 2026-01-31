@@ -64,10 +64,10 @@ export default function NotificationsPage() {
     return (
         <div className="min-h-[calc(100vh-64px)] pb-20">
             {/* Header */}
-            <div className="bg-white border-b border-gray-100 mb-6">
+            <div className="bg-[var(--bg-card)] border-b border-[var(--border-color)] mb-6 card-shadow">
                 <div className="w-full px-6 xl:px-12 py-8 flex items-center justify-between">
-                    <div>
-                        <h1 className="text-2xl font-black text-black tracking-tight flex items-center gap-3">
+                    <div className="section-underline">
+                        <h1 className="text-2xl font-black text-[var(--text-primary)] tracking-tight flex items-center gap-3">
                             Notifications
                             {unreadCount > 0 && (
                                 <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">
@@ -75,7 +75,7 @@ export default function NotificationsPage() {
                                 </span>
                             )}
                         </h1>
-                        <p className="text-[10px] text-gray-500 font-bold tracking-widest uppercase mt-1">Updates & Alerts</p>
+                        <p className="text-[10px] text-[var(--text-secondary)] font-bold tracking-widest uppercase mt-1">Updates & Alerts</p>
                     </div>
 
                     {unreadCount > 0 && (
@@ -86,7 +86,7 @@ export default function NotificationsPage() {
                                 });
                                 toast.success('All notifications marked as read');
                             }}
-                            className="text-xs font-bold text-primary-600 hover:text-primary-700 hover:bg-primary-50 px-3 py-2 rounded-lg transition-colors border border-transparent hover:border-primary-100"
+                            className="text-xs font-bold text-primary-600 hover:text-primary-700 hover:bg-primary-500/10 px-3 py-2 rounded-lg transition-colors border border-transparent hover:border-primary-500/20"
                         >
                             Mark all as read
                         </button>
@@ -95,8 +95,7 @@ export default function NotificationsPage() {
             </div>
 
             {/* Ambient Background */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-100/40 rounded-full blur-[100px] -z-10 pointer-events-none mix-blend-multiply" />
-            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-100/40 rounded-full blur-[100px] -z-10 pointer-events-none mix-blend-multiply" />
+
 
             <div className="w-full px-6 xl:px-12 max-w-4xl mx-auto">
                 {loading ? (
@@ -107,11 +106,11 @@ export default function NotificationsPage() {
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="text-center py-20 bg-white/50 backdrop-blur-sm rounded-2xl border border-dashed border-gray-200 flex flex-col items-center"
+                        className="text-center py-20 bg-[var(--bg-glass-subtle)] backdrop-blur-sm rounded-2xl border border-dashed border-[var(--border-color)] flex flex-col items-center"
                     >
-                        <BellOff size={48} className="text-gray-200 mb-4" />
-                        <h3 className="text-lg font-bold text-black mb-2">No notifications yet</h3>
-                        <p className="text-gray-500 text-sm">We'll let you know when something important happens.</p>
+                        <BellOff size={48} className="text-[var(--text-secondary)] mb-4" />
+                        <h3 className="text-lg font-bold text-[var(--text-primary)] mb-2">No notifications yet</h3>
+                        <p className="text-[var(--text-secondary)] text-sm">We'll let you know when something important happens.</p>
                     </motion.div>
                 ) : (
                     <motion.div
@@ -139,10 +138,9 @@ export default function NotificationsPage() {
                                 whileHover={{ scale: 1.02, y: -2 }}
                                 whileTap={{ scale: 0.98 }}
                                 className={clsx(
-                                    "relative bg-white/80 backdrop-blur-sm rounded-2xl border p-5 flex gap-4 transition-all duration-200 cursor-pointer group",
-                                    notif.isRead
-                                        ? "border-gray-100 opacity-70 hover:opacity-100 hover:border-gray-200"
-                                        : "border-primary-100 shadow-sm shadow-primary-500/5 hover:shadow-md hover:border-primary-200 hover:shadow-primary-500/10"
+                                    "relative bg-[var(--bg-card)] backdrop-blur-sm rounded-2xl border p-5 flex gap-4 transition-all duration-200 cursor-pointer group",
+                                    "border-primary-500/30 shadow-[0_0_20px_rgba(139,92,246,0.15)] hover:shadow-[0_0_25px_rgba(139,92,246,0.25)] hover:border-primary-500/50",
+                                    notif.isRead && "opacity-90"
                                 )}
                             >
                                 {!notif.isRead && (
@@ -151,23 +149,21 @@ export default function NotificationsPage() {
 
                                 <div className={clsx(
                                     "w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 transition-colors border shadow-sm",
-                                    notif.isRead
-                                        ? "bg-gray-50 border-gray-100 text-gray-400 group-hover:bg-white"
-                                        : "bg-primary-50 border-primary-100 text-primary-600 group-hover:scale-110 duration-300"
+                                    "bg-primary-500/10 border-primary-500/20 text-primary-600 group-hover:scale-110 duration-300"
                                 )}>
                                     {getIcon(notif.type)}
                                 </div>
 
                                 <div className="flex-1 pr-4">
                                     <h4 className={clsx("text-sm font-bold mb-1 group-hover:text-primary-600 transition-colors",
-                                        notif.isRead ? "text-gray-900" : "text-black"
+                                        notif.isRead ? "text-[var(--text-primary)]" : "text-[var(--text-primary)]"
                                     )}>
                                         {notif.title}
                                     </h4>
-                                    <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
+                                    <p className="text-xs text-[var(--text-secondary)] leading-relaxed line-clamp-2">
                                         {notif.message}
                                     </p>
-                                    <p className="text-[10px] font-bold text-gray-300 uppercase tracking-wider mt-3 group-hover:text-primary-400 transition-colors">
+                                    <p className="text-[10px] font-bold text-[var(--text-secondary)] opacity-70 uppercase tracking-wider mt-3 group-hover:text-primary-400 transition-colors">
                                         {format(new Date(notif.createdAt), 'MMM d, p')}
                                     </p>
                                 </div>

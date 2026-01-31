@@ -28,41 +28,136 @@
 }
 
 @layer base {
+  :root {
+    --bg-primary: #ffffff;
+    --bg-card: #ffffff;
+    --bg-glass: rgba(255, 255, 255, 0.85);
+    --bg-glass-strong: rgba(255, 255, 255, 0.95);
+    --bg-glass-subtle: rgba(255, 255, 255, 0.7);
+    --text-primary: #1a1a1a;
+    --text-secondary: #4b5563;
+    /* Light gray border that's visible on white backgrounds */
+    --border-color: #e5e7eb;
+    --border-color-strong: #d1d5db;
+
+    /* Enhanced card shadows for Light Mode - more visible definition */
+    --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03);
+    --card-shadow-hover: 0 10px 40px rgba(139, 92, 246, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08);
+    --card-glow: 0 0 20px rgba(139, 92, 246, 0.1), 0 0 0 1px rgba(139, 92, 246, 0.08);
+
+    /* Overlay colors for Light Mode */
+    --overlay-color-from: rgba(255, 255, 255, 0.95);
+    --overlay-color-via: rgba(255, 255, 255, 0.8);
+    --overlay-color-to: rgba(255, 255, 255, 0.95);
+  }
+
+  [data-theme='dark'] {
+    --bg-primary: #0D1117;
+    --bg-card: #161B22;
+    --bg-glass: rgba(22, 27, 34, 0.6);
+    --bg-glass-strong: rgba(22, 27, 34, 0.8);
+    --bg-glass-subtle: rgba(22, 27, 34, 0.4);
+    --text-primary: #ffffff;
+    --text-secondary: #a1a1aa;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --border-color-strong: rgba(255, 255, 255, 0.2);
+
+    /* Overlay colors for Dark Mode */
+    --overlay-color-from: rgba(13, 17, 23, 0.95);
+    --overlay-color-via: rgba(13, 17, 23, 0.8);
+    --overlay-color-to: rgba(13, 17, 23, 0.95);
+
+    /* Card shadows for Dark Mode */
+    --card-shadow: 0 4px 20px rgba(139, 92, 246, 0.15), 0 1px 3px rgba(0, 0, 0, 0.2);
+    --card-shadow-hover: 0 8px 30px rgba(139, 92, 246, 0.25), 0 4px 6px rgba(0, 0, 0, 0.2);
+    --card-glow: 0 0 20px rgba(139, 92, 246, 0.2);
+
+    /* Important for native inputs like date/time to be dark */
+    color-scheme: dark;
+  }
+
   html {
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #ffffff;
-    color: #1a1a1a;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    /* GPU-accelerated smooth transition for theme switch */
+    transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out;
+    will-change: background-color;
   }
 
   body {
-    background-color: #ffffff;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     min-height: 100vh;
+    transition: background-color 0.35s ease-in-out, color 0.35s ease-in-out;
+  }
+
+  /* Targeted transitions for common UI elements - avoids animating everything */
+  .glass,
+  .glass-strong,
+  .glass-subtle,
+  .card-shadow,
+  .card-glow,
+  .card-container,
+  nav,
+  header,
+  main,
+  section,
+  footer,
+  aside,
+  article,
+  div[class*="bg-"],
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    transition: background-color 0.35s ease-in-out,
+      border-color 0.35s ease-in-out,
+      color 0.35s ease-in-out,
+      box-shadow 0.35s ease-in-out,
+      fill 0.35s ease-in-out,
+      stroke 0.35s ease-in-out;
+  }
+
+  /* SVG icons get their own transition */
+  svg {
+    transition: fill 0.35s ease-in-out, stroke 0.35s ease-in-out, color 0.35s ease-in-out;
+  }
+
+  /* Prevent transitions from interfering with intentional animations */
+  [class*="animate-"],
+  [class*="transition-transform"],
+  [class*="hover:scale"],
+  [class*="hover:translate"] {
+    transition-property: transform, opacity, background-color, border-color, color, box-shadow, fill, stroke;
   }
 }
 
 /* Glassmorphism Utilities */
+/* Glassmorphism Utilities */
 .glass {
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--bg-glass);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid var(--border-color);
 }
 
 .glass-strong {
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--bg-glass-strong);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--border-color);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
 .glass-subtle {
-  background: rgba(255, 255, 255, 0.4);
+  background: var(--bg-glass-subtle);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--border-color);
 }
 
 .glass-dark {
@@ -86,6 +181,10 @@
   border-radius: 5px;
   border: 2px solid transparent;
   background-clip: content-box;
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  background: #30363d;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -188,4 +287,219 @@
   opacity: 0.4;
   z-index: -1;
   pointer-events: none;
+}
+
+/* Decorative Underline for Section Headers */
+.section-underline {
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.section-underline::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary-600), var(--color-primary-400), transparent);
+  border-radius: 2px;
+}
+
+/* Card with theme-aware box shadow */
+.card-shadow {
+  box-shadow: var(--card-shadow);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.card-shadow:hover {
+  box-shadow: var(--card-shadow-hover);
+}
+
+/* Purple glow border for cards */
+.card-glow {
+  box-shadow: var(--card-glow);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.card-glow:hover {
+  box-shadow: 0 0 25px rgba(139, 92, 246, 0.25);
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+/* Card container with clear visual definition in both modes */
+.card-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+}
+
+.card-container:hover {
+  box-shadow: var(--card-shadow-hover);
+  border-color: var(--border-color-strong);
+}
+
+/* Light mode specific enhancements for card definition */
+:root .card-container {
+  border-color: var(--border-color);
+  box-shadow: var(--card-shadow);
+}
+
+/* ========================================
+   PREMIUM THEME TRANSITION - CIRCLE EXPANSION
+   Creates a "paint wipe" effect from toggle point
+   ======================================== */
+
+/* CSS Custom Properties for transition origin */
+:root {
+  --theme-transition-x: 50vw;
+  --theme-transition-y: 50vh;
+  --theme-transition-radius: 100vmax;
+}
+
+/* View Transitions API - For modern browsers (Chrome 111+, Edge 111+) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Old view fades out instantly */
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+/* New view expands with clip-path circle from click point */
+::view-transition-new(root) {
+  z-index: 9999;
+  animation: theme-expand 350ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes theme-expand {
+  from {
+    clip-path: circle(0 at var(--theme-transition-x) var(--theme-transition-y));
+  }
+
+  to {
+    clip-path: circle(var(--theme-transition-radius) at var(--theme-transition-x) var(--theme-transition-y));
+  }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+
+  html,
+  body,
+  .glass,
+  .glass-strong,
+  .glass-subtle,
+  .card-shadow,
+  .card-glow,
+  .card-container,
+  nav,
+  header,
+  main,
+  section,
+  footer,
+  aside,
+  article,
+  div[class*="bg-"],
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    transition-duration: 0s !important;
+  }
+}
+
+/* Fallback CSS animation for non-View-Transitions browsers */
+.theme-transitioning {
+  position: relative;
+}
+
+.theme-transitioning::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99999;
+  pointer-events: none;
+  background-color: var(--bg-primary);
+  animation: fallback-expand 350ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fallback-expand {
+  from {
+    clip-path: circle(0 at var(--theme-transition-x) var(--theme-transition-y));
+    opacity: 1;
+  }
+
+  80% {
+    clip-path: circle(var(--theme-transition-radius) at var(--theme-transition-x) var(--theme-transition-y));
+    opacity: 1;
+  }
+
+  to {
+    clip-path: circle(var(--theme-transition-radius) at var(--theme-transition-x) var(--theme-transition-y));
+    opacity: 0;
+  }
+}
+
+/* Enhanced global transitions for smooth theme changes */
+html.theme-transitioning,
+html.theme-transitioning body,
+html.theme-transitioning * {
+  transition:
+    background-color 350ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 350ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 350ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 350ms cubic-bezier(0.4, 0, 0.2, 1),
+    fill 350ms cubic-bezier(0.4, 0, 0.2, 1),
+    stroke 350ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Theme toggle button animation enhancement */
+.theme-toggle-btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-toggle-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, var(--color-primary-500) 0%, transparent 70%);
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-toggle-btn:active::before {
+  opacity: 0.3;
+  transform: scale(2);
+}
+
+.theme-toggle-btn:hover {
+  transform: scale(1.1);
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+/* Utility to disable all transitions (used during View Transition updates) */
+.stop-transitions,
+.stop-transitions * {
+  transition: none !important;
 }

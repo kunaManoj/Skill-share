@@ -1,13 +1,15 @@
 import { Link, useLocation } from 'react-router-dom';
 import { SignedIn, SignedOut, UserButton, useUser } from '@clerk/clerk-react';
-import { Menu, X, BookOpen, Wallet, GraduationCap, Shield, Bell, Zap, AlertTriangle } from 'lucide-react';
+import { Menu, X, BookOpen, Wallet, GraduationCap, Shield, Bell, Zap, AlertTriangle, Sun, Moon } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { syncUser } from '../lib/api';
 import clsx from 'clsx';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Navbar() {
     const { user } = useUser();
+    const { theme, toggleThemeWithAnimation } = useTheme();
     const [isOpen, setIsOpen] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
     const location = useLocation();
@@ -48,13 +50,13 @@ export default function Navbar() {
             {active && (
                 <motion.div
                     layoutId="navbar-active"
-                    className="absolute inset-0 bg-primary-50 rounded-xl"
+                    className="absolute inset-0 bg-primary-50 dark:bg-white/10 rounded-xl"
                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                 />
             )}
 
             {/* Hover Glow Effect */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-primary-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+            <div className="absolute inset-0 bg-gradient-to-tr from-primary-50 to-transparent dark:from-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
 
             <div className="relative z-10 transition-transform duration-200 group-hover:scale-110 group-active:scale-95 flex flex-col items-center gap-1">
                 {icon}
@@ -68,7 +70,11 @@ export default function Navbar() {
             initial={{ y: -100 }}
             animate={{ y: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-3xl border-b border-white/40 shadow-[0_15px_30px_-10px_rgba(79,70,229,0.2)] supports-[backdrop-filter]:bg-white/60 rounded-b-3xl transition-all duration-300"
+            className="fixed top-0 left-0 right-0 z-50 backdrop-blur-3xl shadow-[0_15px_30px_-10px_rgba(79,70,229,0.2)] rounded-b-3xl transition-all duration-300 border-b"
+            style={{
+                backgroundColor: 'var(--bg-glass-strong)',
+                borderColor: 'var(--border-color)'
+            }}
         >
             {/* 3D Gradient Border/Glow */}
             <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
@@ -84,7 +90,7 @@ export default function Navbar() {
                             >
                                 <GraduationCap size={20} strokeWidth={2.5} />
                             </motion.div>
-                            <span className="text-xl font-black tracking-tight text-gray-900 leading-none">
+                            <span className="text-xl font-black tracking-tight text-[var(--text-primary)] leading-none">
                                 Skill<span className="text-primary-600">Share</span>
                             </span>
                         </Link>
@@ -108,13 +114,26 @@ export default function Navbar() {
 
                     {/* Auth & Profile */}
                     <div className="flex items-center gap-4">
+                        <button
+                            onClick={(e) => {
+                                const rect = e.currentTarget.getBoundingClientRect();
+                                const x = rect.left + rect.width / 2;
+                                const y = rect.top + rect.height / 2;
+                                toggleThemeWithAnimation(x, y);
+                            }}
+                            className="theme-toggle-btn p-2 rounded-xl text-gray-500 hover:text-primary-600 hover:bg-[var(--primary-50)] dark:text-gray-400 dark:hover:text-primary-400 dark:hover:bg-white/5"
+                            title="Toggle Theme"
+                        >
+                            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                        </button>
+
                         <SignedIn>
                             {isAdmin && (
                                 <Link to="/admin" className="mr-2 px-3 py-1.5 bg-gray-900 text-white text-[10px] font-black rounded-lg uppercase tracking-widest hover:bg-gray-800 transition-all shadow-lg shadow-gray-900/20 hover:scale-105 active:scale-95">
                                     Admin
                                 </Link>
                             )}
-                            <div className="ml-1 pl-4 border-l border-gray-100">
+                            <div className="ml-1 pl-4 border-l border-[var(--border-color)]">
                                 <UserButton
                                     appearance={{
                                         elements: {
@@ -127,7 +146,7 @@ export default function Navbar() {
 
                         <SignedOut>
                             <div className="hidden md:flex items-center gap-3">
-                                <Link to="/sign-in" className="text-xs font-bold text-gray-700 hover:text-primary-600 px-3 py-2 transition-colors">
+                                <Link to="/sign-in" className="text-xs font-bold text-[var(--text-secondary)] hover:text-primary-600 px-3 py-2 transition-colors">
                                     Log in
                                 </Link>
                                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -142,7 +161,7 @@ export default function Navbar() {
                         <div className="flex items-center gap-3 md:hidden">
                             <button
                                 onClick={() => setIsOpen(!isOpen)}
-                                className="text-gray-500 p-2 hover:bg-gray-50 rounded-xl transition-colors active:scale-90"
+                                className="text-[var(--text-secondary)] p-2 hover:bg-[var(--bg-glass)] rounded-xl transition-colors active:scale-90"
                             >
                                 {isOpen ? <X size={24} /> : <Menu size={24} />}
                             </button>
@@ -158,7 +177,8 @@ export default function Navbar() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="md:hidden bg-white/90 backdrop-blur-xl border-t border-white/20 absolute w-full left-0 shadow-2xl overflow-hidden"
+                        className="md:hidden backdrop-blur-xl border-t absolute w-full left-0 shadow-2xl overflow-hidden"
+                        style={{ backgroundColor: 'var(--bg-glass-strong)', borderColor: 'var(--border-color)' }}
                     >
                         <div className="px-4 pt-4 pb-6 space-y-2 flex flex-col">
                             <MobileLink to="/marketplace" onClick={() => setIsOpen(false)}>Find Skills</MobileLink>

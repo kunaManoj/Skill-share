@@ -65,13 +65,13 @@ export default function AddSkillPage() {
             <SEO title="Add New Skill" />
 
             {/* Background Glows */}
-            <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary-100/40 rounded-full blur-[100px] -z-10 pointer-events-none" />
+
 
             <div className="text-center mb-10">
                 <motion.h1
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-3xl font-bold text-gray-900"
+                    className="text-3xl font-bold text-[var(--text-primary)]"
                 >
                     Share Your <span className="text-primary-600">Skill</span>
                 </motion.h1>
@@ -79,7 +79,7 @@ export default function AddSkillPage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2 }}
-                    className="text-gray-600 mt-2"
+                    className="text-[var(--text-secondary)] mt-2"
                 >
                     Start earning by helping other students.
                 </motion.p>
@@ -90,13 +90,13 @@ export default function AddSkillPage() {
                 initial="hidden"
                 animate="show"
                 onSubmit={handleSubmit}
-                className="bg-white/70 backdrop-blur-xl rounded-2xl shadow-xl shadow-gray-200/50 border border-white/60 overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-primary-100"
+                className="bg-[var(--bg-card)] backdrop-blur-xl rounded-2xl shadow-xl shadow-[var(--border-color)] border border-[var(--border-color)] overflow-hidden transition-all duration-300 hover:shadow-2xl hover:border-primary-100"
             >
                 <div className="p-8 space-y-6">
 
                     {/* Title */}
                     <motion.div variants={itemVariants}>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Skill Title</label>
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Skill Title</label>
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary-500 transition-colors">
                                 <BookOpen size={18} />
@@ -104,7 +104,7 @@ export default function AddSkillPage() {
                             <input
                                 type="text"
                                 required
-                                className="block w-full pl-10 pr-3 py-2.5 border border-gray-300/60 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-white/50 text-gray-900 placeholder:text-gray-400 outline-none transition-all duration-200 focus:bg-white hover:border-primary-300/70 shadow-sm"
+                                className="block w-full pl-10 pr-3 py-2.5 border border-[var(--border-color)] rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-[var(--bg-glass-subtle)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] outline-none transition-all duration-200 focus:bg-[var(--bg-card)] hover:border-primary-300/70 shadow-sm"
                                 placeholder="e.g. Python Programming"
                                 value={formData.title}
                                 onChange={e => setFormData({ ...formData, title: e.target.value })}
@@ -115,27 +115,27 @@ export default function AddSkillPage() {
                     {/* Category & Price */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <motion.div variants={itemVariants}>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Category</label>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary-500 transition-colors">
                                     <Tag size={18} />
                                 </div>
                                 <select
                                     required
-                                    className="block w-full pl-10 pr-3 py-2.5 border border-gray-300/60 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-white/50 text-gray-900 outline-none cursor-pointer transition-all duration-200 focus:bg-white hover:border-primary-300/70 shadow-sm appearance-none"
+                                    className="block w-full pl-10 pr-3 py-2.5 border border-[var(--border-color)] rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-[var(--bg-glass-subtle)] text-[var(--text-primary)] outline-none cursor-pointer transition-all duration-200 focus:bg-[var(--bg-card)] hover:border-primary-300/70 shadow-sm appearance-none"
                                     value={formData.category}
                                     onChange={e => setFormData({ ...formData, category: e.target.value })}
                                 >
-                                    <option value="">Select a category</option>
+                                    <option value="" className="bg-[var(--bg-card)]">Select a category</option>
                                     {CATEGORIES.map(cat => (
-                                        <option key={cat} value={cat}>{cat}</option>
+                                        <option key={cat} value={cat} className="bg-[var(--bg-card)]">{cat}</option>
                                     ))}
                                 </select>
                             </div>
                         </motion.div>
 
                         <motion.div variants={itemVariants}>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Price (₹)</label>
+                            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Price (₹)</label>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary-500 transition-colors">
                                     <DollarSign size={18} />
@@ -144,7 +144,7 @@ export default function AddSkillPage() {
                                     type="number"
                                     required
                                     min="0"
-                                    className="block w-full pl-10 pr-3 py-2.5 border border-gray-300/60 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-white/50 text-gray-900 placeholder:text-gray-400 outline-none transition-all duration-200 focus:bg-white hover:border-primary-300/70 shadow-sm"
+                                    className="block w-full pl-10 pr-3 py-2.5 border border-[var(--border-color)] rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-[var(--bg-glass-subtle)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] outline-none transition-all duration-200 focus:bg-[var(--bg-card)] hover:border-primary-300/70 shadow-sm"
                                     placeholder="500"
                                     value={formData.price}
                                     onChange={e => setFormData({ ...formData, price: e.target.value })}
@@ -156,7 +156,7 @@ export default function AddSkillPage() {
                     {/* Duration & Language */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <motion.div variants={itemVariants}>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Duration (minutes)</label>
+                            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Duration (minutes)</label>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary-500 transition-colors">
                                     <Clock size={18} />
@@ -166,7 +166,7 @@ export default function AddSkillPage() {
                                     required
                                     min="5"
                                     step="15"
-                                    className="block w-full pl-10 pr-3 py-2.5 border border-gray-300/60 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-white/50 text-gray-900 placeholder:text-gray-400 outline-none transition-all duration-200 focus:bg-white hover:border-primary-300/70 shadow-sm"
+                                    className="block w-full pl-10 pr-3 py-2.5 border border-[var(--border-color)] rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-[var(--bg-glass-subtle)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] outline-none transition-all duration-200 focus:bg-[var(--bg-card)] hover:border-primary-300/70 shadow-sm"
                                     placeholder="60"
                                     value={formData.duration}
                                     onChange={e => setFormData({ ...formData, duration: e.target.value })}
@@ -175,7 +175,7 @@ export default function AddSkillPage() {
                         </motion.div>
 
                         <motion.div variants={itemVariants}>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Language</label>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary-500 transition-colors">
                                     <Languages size={18} />
@@ -183,7 +183,7 @@ export default function AddSkillPage() {
                                 <input
                                     type="text"
                                     required
-                                    className="block w-full pl-10 pr-3 py-2.5 border border-gray-300/60 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-white/50 text-gray-900 placeholder:text-gray-400 outline-none transition-all duration-200 focus:bg-white hover:border-primary-300/70 shadow-sm"
+                                    className="block w-full pl-10 pr-3 py-2.5 border border-[var(--border-color)] rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-[var(--bg-glass-subtle)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] outline-none transition-all duration-200 focus:bg-[var(--bg-card)] hover:border-primary-300/70 shadow-sm"
                                     placeholder="e.g. English, Spanish"
                                     value={formData.language}
                                     onChange={e => setFormData({ ...formData, language: e.target.value })}
@@ -194,43 +194,44 @@ export default function AddSkillPage() {
 
                     {/* Experience */}
                     <motion.div variants={itemVariants}>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Experience Level</label>
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Experience Level</label>
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400 group-focus-within:text-primary-500 transition-colors">
                                 <Award size={18} />
                             </div>
                             <select
-                                className="block w-full pl-10 pr-3 py-2.5 border border-gray-300/60 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-white/50 text-gray-900 outline-none cursor-pointer transition-all duration-200 focus:bg-white hover:border-primary-300/70 shadow-sm"
+                                className="block w-full pl-10 pr-3 py-2.5 border border-[var(--border-color)] rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-[var(--bg-glass-subtle)] text-[var(--text-primary)] outline-none cursor-pointer transition-all duration-200 focus:bg-[var(--bg-card)] hover:border-primary-300/70 shadow-sm"
                                 value={formData.experience}
                                 onChange={e => setFormData({ ...formData, experience: e.target.value })}
                             >
-                                <option value="Beginner">Beginner (1-2 years)</option>
-                                <option value="Intermediate">Intermediate (3-5 years)</option>
-                                <option value="Expert">Expert (5+ years)</option>
+                                <option value="Beginner" className="bg-[var(--bg-card)]">Beginner (1-2 years)</option>
+                                <option value="Intermediate" className="bg-[var(--bg-card)]">Intermediate (3-5 years)</option>
+                                <option value="Expert" className="bg-[var(--bg-card)]">Expert (5+ years)</option>
                             </select>
                         </div>
                     </motion.div>
 
                     {/* Description */}
                     <motion.div variants={itemVariants}>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Description</label>
                         <textarea
                             required
                             rows={4}
-                            className="block w-full p-3 border border-gray-300/60 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-white/50 text-gray-900 placeholder:text-gray-400 outline-none resize-none transition-all duration-200 focus:bg-white hover:border-primary-300/70 shadow-sm"
+                            className="block w-full p-3 border border-[var(--border-color)] rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 bg-[var(--bg-glass-subtle)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] outline-none resize-none transition-all duration-200 focus:bg-[var(--bg-card)] hover:border-primary-300/70 shadow-sm"
                             placeholder="Describe what you will teach and your teaching style..."
                             value={formData.description}
                             onChange={e => setFormData({ ...formData, description: e.target.value })}
                         />
                     </motion.div>
 
+
                 </div>
 
-                <div className="bg-gray-50/50 backdrop-blur-sm px-8 py-4 flex justify-end items-center gap-4 border-t border-gray-100">
+                <div className="bg-[var(--bg-glass-subtle)] backdrop-blur-sm px-8 py-4 flex justify-end items-center gap-4 border-t border-[var(--border-color)]">
                     <button
                         type="button"
                         onClick={() => navigate(-1)}
-                        className="text-gray-600 hover:text-gray-900 font-bold transition-colors px-4 py-2 hover:bg-gray-200/50 rounded-xl text-sm"
+                        className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] font-bold transition-colors px-4 py-2 hover:bg-[var(--bg-glass-subtle)] rounded-xl text-sm"
                     >
                         Cancel
                     </button>

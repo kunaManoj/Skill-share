@@ -40,19 +40,19 @@ export default function ReviewModal({ isOpen, onClose, bookingId }: ReviewModalP
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl animate-in fade-in zoom-in duration-200 border border-gray-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div className="bg-[var(--bg-card)] rounded-2xl w-full max-w-md shadow-2xl animate-in fade-in zoom-in duration-200 border border-[var(--border-color)]">
                 <div className="p-6">
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-2xl font-bold text-gray-900">Rate Session</h2>
-                        <button onClick={onClose} className="p-2 hover:bg-gray-100:bg-gray-900 rounded-full transition-colors">
-                            <X size={20} className="text-gray-500" />
+                        <h2 className="text-2xl font-bold text-[var(--text-primary)]">Rate Session</h2>
+                        <button onClick={onClose} className="p-2 hover:bg-[var(--bg-glass-subtle)] rounded-full transition-colors text-[var(--text-secondary)]">
+                            <X size={20} />
                         </button>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="flex flex-col items-center gap-2">
-                            <label className="text-sm font-medium text-gray-600">How was your experience?</label>
+                            <label className="text-sm font-medium text-[var(--text-secondary)]">How was your experience?</label>
                             <div className="flex gap-2">
                                 {[1, 2, 3, 4, 5].map((star) => (
                                     <button
@@ -65,7 +65,7 @@ export default function ReviewModal({ isOpen, onClose, bookingId }: ReviewModalP
                                             size={32}
                                             className={clsx(
                                                 "transition-colors",
-                                                star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                                                star <= rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300 dark:text-gray-600"
                                             )}
                                         />
                                     </button>
@@ -74,12 +74,12 @@ export default function ReviewModal({ isOpen, onClose, bookingId }: ReviewModalP
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Write a review</label>
+                            <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">Write a review</label>
                             <textarea
                                 value={comment}
                                 onChange={(e) => setComment(e.target.value)}
                                 rows={4}
-                                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all resize-none bg-white text-gray-900 placeholder:text-gray-400:text-gray-500"
+                                className="w-full px-4 py-3 rounded-lg border border-[var(--border-color)] focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all resize-none bg-[var(--bg-glass-subtle)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]"
                                 placeholder="Share details about what you learned..."
                                 required
                             />
@@ -89,7 +89,7 @@ export default function ReviewModal({ isOpen, onClose, bookingId }: ReviewModalP
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="flex-1 px-4 py-3 rounded-xl border border-gray-200 text-gray-700 font-medium hover:bg-gray-50:bg-gray-900 transition-colors"
+                                className="flex-1 px-4 py-3 rounded-xl border border-[var(--border-color)] text-[var(--text-secondary)] font-medium hover:bg-[var(--bg-glass-subtle)] transition-colors"
                             >
                                 Skip
                             </button>
