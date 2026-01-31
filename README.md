@@ -26,8 +26,10 @@ Unlike traditional tutoring platforms, SkillShare is built for the campus ecosys
 
 ## 🔥 Key Features
 
+- **🌗 Dark/Light Mode**: Fully customizable theme with smooth transitions and persistent user preference.
+- **🎨 Modern UI/UX**: Features a 3D glassmorphic navbar, smooth scrolling (Lenis), and engaging scroll-triggered animations.
 - **🔎 Smart Search & Discovery**: Find skills by category (Academic, Programming, Music, etc.) or use the advanced search with literal string matching (perfect for "C++", "C#").
-- **💰 Secure Escrow Payments**: Payments are held in escrow via Razorpay and released to the provider only after the session is successfully completed.
+- **💰 Secure Escrow & Attendance**: Payments are held in escrow and released only if the provider meets the 70% attendance threshold.
 - **🎥 Integrated Video Calls**: High-quality video sessions powered by ZegoCloud, built right into the platform. No external links needed.
 - **💬 Real-Time Chat**: Chat with your tutor/student about the session using Socket.io.
 - **📅 Booking Management**: Easy-to-use dashboard to track upcoming, pending, and completed sessions.
@@ -52,7 +54,6 @@ Unlike traditional tutoring platforms, SkillShare is built for the campus ecosys
 - **Database:** [MongoDB](https://www.mongodb.com/) + Mongoose
 - **Payments:** [Razorpay](https://razorpay.com/)
 - **Scheduling:** Node Cron
-- **Webhooks:** Svix
 
 ## 🚀 Getting Started
 
@@ -131,13 +132,14 @@ Follow these steps to set up the project locally.
 2. **Explore**: Browse the marketplace. Use filters to sort by Price (Low to High), Rating, or Category.
 3. **Offer a Skill**: Go to your profile and "Create Skill". Set your price and description.
 4. **Book a Session**: Click on a skill, select a time (collaborative scheduling), and pay upfront.
-5. **Attend**: When the time comes, join the video room directly from the dashboard.
-6. **Release Funds**: After the session, the payment is released to the provider's wallet.
+5. **Attend**: Join the video room from the dashboard. The system tracks user attendance automatically.
+6. **Completion**: If the provider attends at least 70% of the session duration, funds are released to their wallet. Otherwise, the student is refunded.
 
 ## 🛡️ Security & Payments
 This platform acts as a secure intermediary.
-- **Escrow**: Student payments are not sent directly to the provider. They are held securely until the service is delivered.
-- **Refunds**: If a provider is a "No Show", students can claim an instant refund via the dashboard.
+- **Escrow**: Student payments are held securely until the session is verified.
+- **Attendance Verification**: Providers must be present for at least 70% of the scheduled session time to receive payment.
+- **Refunds**: If a provider is a "No Show" or fails to meet attendance criteria, the student can receive refund to their wallet.
 
 ## 📬 Contact
 Email: `manojkuna2005@gmail.com`  
