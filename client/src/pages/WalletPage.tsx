@@ -121,7 +121,7 @@ export default function WalletPage() {
 
     return (
         <div className="min-h-[calc(100vh-64px)] pb-20 relative">
-            <SEO title="My Wallet" description="Manage your UniRent balance and transactions." />
+            <SEO title="My Wallet" description="Manage your SkillShare balance and transactions." />
 
             {/* Header section */}
             <div className="bg-[var(--bg-card)] border-b border-[var(--border-color)] mb-6 card-shadow">

@@ -36,7 +36,7 @@ app.use('/api/complaints', require('./routes/complaints'));
 
 // Health Check
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', service: 'UniRent API' });
+    res.json({ status: 'ok', service: 'SkillShare API' });
 });
 
 // Database Connection

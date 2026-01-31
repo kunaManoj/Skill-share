@@ -36,7 +36,7 @@ router.post('/clerk', async (req, res) => {
                     firstName: first_name,
                     lastName: last_name,
                     imageUrl: image_url,
-                    role: (email.toLowerCase().includes('admin') || ['manojkuna2005@gmail.com', 'owner@unirent.com'].includes(email)) ? 'admin' : 'student',
+                    role: (email.toLowerCase().includes('admin') || ['manojkuna2005@gmail.com', 'owner@skillshare.com'].includes(email)) ? 'admin' : 'student',
                     updatedAt: new Date(),
                 },
                 { upsert: true, new: true }

@@ -14,7 +14,7 @@ router.post('/sync', async (req, res) => {
         // Check for admin list or keyword
         const normEmail = email.toLowerCase().trim();
         const isAdmin = normEmail.includes('admin') ||
-            ['manojkuna2005@gmail.com', 'owner@unirent.com'].includes(normEmail);
+            ['manojkuna2005@gmail.com', 'owner@skillshare.com'].includes(normEmail);
 
         const updateData = {
             clerkId,

@@ -172,7 +172,7 @@ router.post('/withdraw', async (req, res) => {
                     if (user) {
                         try {
                             const contact = await razorpay.contacts.create({
-                                name: (user.firstName + ' ' + (user.lastName || '')).trim() || 'UniRent Provider',
+                                name: (user.firstName + ' ' + (user.lastName || '')).trim() || 'SkillShare Provider',
                                 email: user.email,
                                 type: 'vendor',
                                 reference_id: userId,
@@ -227,7 +227,7 @@ router.post('/withdraw', async (req, res) => {
                         purpose: 'payout',
                         queue_if_low_balance: true,
                         reference_id: `wd_${Date.now()}_${userId.slice(-4)}`,
-                        narration: 'UniRent Withdrawal'
+                        narration: 'SkillShare Withdrawal'
                     });
                     payoutId = payout.id;
                 } catch (e) {
